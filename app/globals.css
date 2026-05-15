@@ -1,4 +1,6 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600&family=Space+Grotesk:wght@500;700&display=swap');
 @import "tailwindcss";
+
 
 @theme {
   --color-primary: #FFD60A; /* Soft vibrant yellow */
@@ -15,8 +17,8 @@
 
   --radius-cartoon: 2rem;
   
-  --font-sans: var(--font-jakarta), ui-sans-serif, system-ui;
-  --font-display: var(--font-poppins), ui-sans-serif, system-ui;
+  --font-sans: 'Plus Jakarta Sans', ui-sans-serif, system-ui;
+  --font-display: 'Space Grotesk', system-ui;
 }
 
 :root {
