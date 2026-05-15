@@ -3,7 +3,7 @@
 import * as XLSX from 'xlsx'
 import CartoonButton from './CartoonButton'
 import { FileSpreadsheet } from 'lucide-react'
-import { Member } from '@/lib/supabase'
+import { Member, Fine } from '@/lib/supabase'
 
 interface ExportDataProps {
   data: Member[]
