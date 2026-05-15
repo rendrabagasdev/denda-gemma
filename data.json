@@ -1,0 +1,452 @@
+[
+  {
+    "Nama": "Alga",
+    "RT": "3",
+    "DENDA": "30000"
+  },
+  {
+    "Nama": "fredy",
+    "RT": "3",
+    "DENDA": "20000"
+  },
+  {
+    "Nama": "Faiz",
+    "RT": "3",
+    "DENDA": "0"
+  },
+  {
+    "Nama": "Ferdi",
+    "RT": "3",
+    "DENDA": "20000"
+  },
+  {
+    "Nama": "Hanif",
+    "RT": "3",
+    "DENDA": "20000"
+  },
+  {
+    "Nama": "izza",
+    "RT": "3",
+    "DENDA": "20000"
+  },
+  {
+    "Nama": "raiza",
+    "RT": "3",
+    "DENDA": "20000"
+  },
+  {
+    "Nama": "Rizqo",
+    "RT": "3",
+    "DENDA": "0"
+  },
+  {
+    "Nama": "Ruli",
+    "RT": "3",
+    "DENDA": "30000"
+  },
+  {
+    "Nama": "Sania",
+    "RT": "3",
+    "DENDA": "0"
+  },
+  {
+    "Nama": "Ifah",
+    "RT": "3",
+    "DENDA": "10000"
+  },
+  {
+    "Nama": "",
+    "RT": "",
+    "DENDA": ""
+  },
+  {
+    "Nama": "Syafiq",
+    "RT": "4",
+    "DENDA": "0"
+  },
+  {
+    "Nama": "Salma",
+    "RT": "4",
+    "DENDA": "30000"
+  },
+  {
+    "Nama": "Dea",
+    "RT": "4",
+    "DENDA": "20000"
+  },
+  {
+    "Nama": "Bram",
+    "RT": "4",
+    "DENDA": "0"
+  },
+  {
+    "Nama": "Migunani",
+    "RT": "4",
+    "DENDA": "20000"
+  },
+  {
+    "Nama": "Iksan",
+    "RT": "4",
+    "DENDA": "30000"
+  },
+  {
+    "Nama": "Riski",
+    "RT": "4",
+    "DENDA": "0"
+  },
+  {
+    "Nama": "Nida",
+    "RT": "4",
+    "DENDA": "30000"
+  },
+  {
+    "Nama": "Sasa",
+    "RT": "4",
+    "DENDA": "20000"
+  },
+  {
+    "Nama": "Ryan",
+    "RT": "4",
+    "DENDA": "0"
+  },
+  {
+    "Nama": "Yanu",
+    "RT": "4",
+    "DENDA": "30000"
+  },
+  {
+    "Nama": "Citra",
+    "RT": "4",
+    "DENDA": "20000"
+  },
+  {
+    "Nama": "Intan",
+    "RT": "4",
+    "DENDA": "20000"
+  },
+  {
+    "Nama": "Sonda",
+    "RT": "4",
+    "DENDA": "0"
+  },
+  {
+    "Nama": "embun",
+    "RT": "4",
+    "DENDA": "0"
+  },
+  {
+    "Nama": "febby",
+    "RT": "4",
+    "DENDA": "0"
+  },
+  {
+    "Nama": "Dina",
+    "RT": "4",
+    "DENDA": "0"
+  },
+  {
+    "Nama": "Afrina",
+    "RT": "5",
+    "DENDA": "0"
+  },
+  {
+    "Nama": "Alya",
+    "RT": "5",
+    "DENDA": "0"
+  },
+  {
+    "Nama": "Aviev",
+    "RT": "5",
+    "DENDA": "30000"
+  },
+  {
+    "Nama": "Ariq",
+    "RT": "5",
+    "DENDA": "20000"
+  },
+  {
+    "Nama": "Wildan",
+    "RT": "5",
+    "DENDA": "0"
+  },
+  {
+    "Nama": "Syafa",
+    "RT": "5",
+    "DENDA": "20000"
+  },
+  {
+    "Nama": "Nabila",
+    "RT": "5",
+    "DENDA": "0"
+  },
+  {
+    "Nama": "Wanda",
+    "RT": "5",
+    "DENDA": "0"
+  },
+  {
+    "Nama": "Nisa",
+    "RT": "5",
+    "DENDA": "30000"
+  },
+  {
+    "Nama": "Naila",
+    "RT": "5",
+    "DENDA": "0"
+  },
+  {
+    "Nama": "Khoirul",
+    "RT": "5",
+    "DENDA": "30000"
+  },
+  {
+    "Nama": "Faiza",
+    "RT": "5",
+    "DENDA": "20000"
+  },
+  {
+    "Nama": "Iqbal",
+    "RT": "5",
+    "DENDA": "30000"
+  },
+  {
+    "Nama": "Anan",
+    "RT": "5",
+    "DENDA": "30000"
+  },
+  {
+    "Nama": "Fani",
+    "RT": "5",
+    "DENDA": "20000"
+  },
+  {
+    "Nama": "Bita ",
+    "RT": "5",
+    "DENDA": "0"
+  },
+  {
+    "Nama": "Shofia",
+    "RT": "5",
+    "DENDA": "30000"
+  },
+  {
+    "Nama": "Abi",
+    "RT": "5",
+    "DENDA": "0"
+  },
+  {
+    "Nama": "Arkan",
+    "RT": "5",
+    "DENDA": "0"
+  },
+  {
+    "Nama": "Deni",
+    "RT": "5",
+    "DENDA": "0"
+  },
+  {
+    "Nama": "Manda",
+    "RT": "5",
+    "DENDA": "30000"
+  },
+  {
+    "Nama": "Syandana",
+    "RT": "5",
+    "DENDA": "20000"
+  },
+  {
+    "Nama": "Regan",
+    "RT": "5",
+    "DENDA": "0"
+  },
+  {
+    "Nama": "Nofal",
+    "RT": "5",
+    "DENDA": "0"
+  },
+  {
+    "Nama": "Vika",
+    "RT": "5",
+    "DENDA": "0"
+  },
+  {
+    "Nama": "Angga",
+    "RT": "5",
+    "DENDA": "0"
+  },
+  {
+    "Nama": "Farel",
+    "RT": "5",
+    "DENDA": "10000"
+  },
+  {
+    "Nama": "Arum",
+    "RT": "5",
+    "DENDA": "0"
+  },
+  {
+    "Nama": "Lita",
+    "RT": "5",
+    "DENDA": "20000"
+  },
+  {
+    "Nama": "Nasrul",
+    "RT": "5",
+    "DENDA": "0"
+  },
+  {
+    "Nama": "Rina ",
+    "RT": "5",
+    "DENDA": "30000"
+  },
+  {
+    "Nama": "Rina R",
+    "RT": "5",
+    "DENDA": "0"
+  },
+  {
+    "Nama": "Faiz",
+    "RT": "5",
+    "DENDA": "0"
+  },
+  {
+    "Nama": "Arifin",
+    "RT": "5",
+    "DENDA": "10000"
+  },
+  {
+    "Nama": "Vinny",
+    "RT": "5",
+    "DENDA": "0"
+  },
+  {
+    "Nama": "Khoirul",
+    "RT": "5",
+    "DENDA": "0"
+  },
+  {
+    "Nama": "Feri",
+    "RT": "6",
+    "DENDA": "20000"
+  },
+  {
+    "Nama": "Bintang",
+    "RT": "6",
+    "DENDA": "30000"
+  },
+  {
+    "Nama": "Yoga",
+    "RT": "6",
+    "DENDA": "20000"
+  },
+  {
+    "Nama": "Yeta",
+    "RT": "6",
+    "DENDA": "30000"
+  },
+  {
+    "Nama": "Sofi",
+    "RT": "6",
+    "DENDA": "0"
+  },
+  {
+    "Nama": "dina",
+    "RT": "6",
+    "DENDA": "0"
+  },
+  {
+    "Nama": "",
+    "RT": "",
+    "DENDA": ""
+  },
+  {
+    "Nama": "Zeni",
+    "RT": "6",
+    "DENDA": "0"
+  },
+  {
+    "Nama": "Yogi",
+    "RT": "6",
+    "DENDA": "0"
+  },
+  {
+    "Nama": "Zahra",
+    "RT": "6",
+    "DENDA": "0"
+  },
+  {
+    "Nama": "Naufal",
+    "RT": "6",
+    "DENDA": "0"
+  },
+  {
+    "Nama": "Afan",
+    "RT": "6",
+    "DENDA": "30000"
+  },
+  {
+    "Nama": "Khofifah",
+    "RT": "6",
+    "DENDA": "0"
+  },
+  {
+    "Nama": "Khilya",
+    "RT": "6",
+    "DENDA": "20000"
+  },
+  {
+    "Nama": "Cahyo",
+    "RT": "6",
+    "DENDA": "0"
+  },
+  {
+    "Nama": "Kholifah",
+    "RT": "6",
+    "DENDA": "0"
+  },
+  {
+    "Nama": "Safira",
+    "RT": "6",
+    "DENDA": "0"
+  },
+  {
+    "Nama": "Bagas",
+    "RT": "6",
+    "DENDA": "0"
+  },
+  {
+    "Nama": "",
+    "RT": "",
+    "DENDA": "0"
+  },
+  {
+    "Nama": "Sella",
+    "RT": "6",
+    "DENDA": "30000"
+  },
+  {
+    "Nama": "Selly",
+    "RT": "6",
+    "DENDA": "30000"
+  },
+  {
+    "Nama": "Madarik",
+    "RT": "6",
+    "DENDA": "0"
+  },
+  {
+    "Nama": "yafi",
+    "RT": "6",
+    "DENDA": "20000"
+  },
+  {
+    "Nama": "Nihaya",
+    "RT": "6",
+    "DENDA": "0"
+  },
+  {
+    "Nama": "Rafi",
+    "RT": "6",
+    "DENDA": "20000"
+  }
+]
