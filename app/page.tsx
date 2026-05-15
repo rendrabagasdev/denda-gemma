@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { supabase, Member, Fine } from '@/lib/supabase'
 import MemberCard from '@/components/MemberCard'
 import { Search, Trophy, Info, X, Banknote, Calendar, ChevronRight } from 'lucide-react'
@@ -43,12 +43,23 @@ export default function GuestPage() {
   }, [])
 
   async function fetchData() {
-    setLoading(true)
+    // 1. Try Cache First for Instant UI
+    const cachedMembers = localStorage.getItem('cached_members')
+    const cachedFines = localStorage.getItem('cached_fines')
+    
+    if (cachedMembers && cachedFines) {
+      setMembers(JSON.parse(cachedMembers))
+      setFines(JSON.parse(cachedFines))
+      setLoading(false)
+    } else {
+      setLoading(true)
+    }
+
+    // 2. Fetch Fresh Data
     const { data: membersData } = await supabase.from('members').select('*')
     const { data: finesData } = await supabase.from('fines').select('*').eq('is_paid', false)
     
     if (membersData) {
-      // Sort by RT then Nama
       const sorted = [...membersData].sort((a, b) => {
         const rtA = parseInt(a.rt) || 0
         const rtB = parseInt(b.rt) || 0
@@ -56,15 +67,24 @@ export default function GuestPage() {
         return a.nama.localeCompare(b.nama)
       })
       setMembers(sorted)
+      localStorage.setItem('cached_members', JSON.stringify(sorted))
     }
-    if (finesData) setFines(finesData)
+    
+    if (finesData) {
+      setFines(finesData)
+      localStorage.setItem('cached_fines', JSON.stringify(finesData))
+    }
+    
     setLoading(false)
   }
 
-  const filteredMembers = members.filter(m => {
-    const matchesSearch = search ? (m.nama.toLowerCase().includes(search.toLowerCase()) || m.rt.includes(search)) : false
-    return matchesSearch
-  })
+  const filteredMembers = useMemo(() => 
+    members.filter(m => {
+      const matchesSearch = search ? (m.nama.toLowerCase().includes(search.toLowerCase()) || m.rt.includes(search)) : false
+      return matchesSearch
+    }),
+    [members, search]
+  )
 
   const TikTokModal = ({ children, onClose, title }: { children: React.ReactNode, onClose: () => void, title?: string }) => (
     <div className="fixed inset-0 z-[60] flex items-end justify-center bg-black/40 backdrop-blur-md">

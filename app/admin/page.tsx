@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { useRouter } from 'next/navigation'
 import { supabase, Member, Fine } from '@/lib/supabase'
 import { Search, Plus, UserPlus, LogOut, Wallet, Edit3, Trash2, X, Download, History, Home, FileSpreadsheet } from 'lucide-react'
@@ -74,12 +74,23 @@ export default function AdminPage() {
   const [selectedRT, setSelectedRT] = useState<string | null>(null)
 
   const fetchData = async () => {
-    setLoading(true)
+    // 1. Try Cache First for Instant UI
+    const cachedMembers = localStorage.getItem('admin_cached_members')
+    const cachedFines = localStorage.getItem('admin_cached_fines')
+    
+    if (cachedMembers && cachedFines) {
+      setMembers(JSON.parse(cachedMembers))
+      setFines(JSON.parse(cachedFines))
+      setLoading(false)
+    } else {
+      setLoading(true)
+    }
+
+    // 2. Fetch Fresh Data
     const { data: membersData } = await supabase.from('members').select('*')
     const { data: finesData } = await supabase.from('fines').select('*')
     
     if (membersData) {
-      // Sort by RT (numeric) then Nama
       const sorted = [...membersData].sort((a, b) => {
         const rtA = parseInt(a.rt) || 0
         const rtB = parseInt(b.rt) || 0
@@ -87,18 +98,30 @@ export default function AdminPage() {
         return a.nama.localeCompare(b.nama)
       })
       setMembers(sorted)
+      localStorage.setItem('admin_cached_members', JSON.stringify(sorted))
     }
-    if (finesData) setFines(finesData)
+    
+    if (finesData) {
+      setFines(finesData)
+      localStorage.setItem('admin_cached_fines', JSON.stringify(finesData))
+    }
+    
     setLoading(false)
   }
 
-  const allRTs = Array.from(new Set(members.map(m => m.rt))).sort((a, b) => (parseInt(a) || 0) - (parseInt(b) || 0))
+  const allRTs = useMemo(() => 
+    Array.from(new Set(members.map(m => m.rt))).sort((a, b) => (parseInt(a) || 0) - (parseInt(b) || 0)),
+    [members]
+  )
 
-  const filteredMembers = members.filter(m => {
-    const matchesSearch = m.nama.toLowerCase().includes(search.toLowerCase()) || m.rt.includes(search)
-    const matchesRT = selectedRT ? m.rt === selectedRT : true
-    return matchesSearch && matchesRT
-  })
+  const filteredMembers = useMemo(() => 
+    members.filter(m => {
+      const matchesSearch = m.nama.toLowerCase().includes(search.toLowerCase()) || m.rt.includes(search)
+      const matchesRT = selectedRT ? m.rt === selectedRT : true
+      return matchesSearch && matchesRT
+    }),
+    [members, search, selectedRT]
+  )
 
   const handleAction = (member: Member, action: 'payment' | 'edit') => {
     setSelectedMember(member)
