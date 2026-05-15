@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { Member, Fine, supabase } from '@/lib/supabase'
 import CartoonButton from './CartoonButton'
-import { X, Save, PlusCircle, Trash2, Banknote } from 'lucide-react'
+import { X, Save, PlusCircle, Trash2, Banknote, Calendar } from 'lucide-react'
 
 interface EditMemberModalProps {
   member: Member
@@ -149,6 +149,17 @@ export default function EditMemberModal({ member, fines, onClose, onComplete, is
                       <div>
                         <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest">{fine.type}</span>
                         <div className="font-black text-lg text-zinc-900 leading-none mt-1">Rp {fine.amount.toLocaleString('id-ID')}</div>
+                        {fine.created_at && (
+                          <div className="flex items-center gap-1 text-[8px] font-bold text-zinc-300 uppercase mt-2 tracking-tighter">
+                            <Calendar size={10} />
+                            {new Date(fine.created_at).toLocaleDateString('id-ID', { 
+                              weekday: 'long', 
+                              day: '2-digit', 
+                              month: 'short', 
+                              year: 'numeric' 
+                            })}
+                          </div>
+                        )}
                       </div>
                     </div>
                     <button onClick={() => setConfirmDeleteId(fine.id)} className="text-zinc-300 p-2 hover:text-secondary hover:bg-red-50 rounded-xl transition-all">

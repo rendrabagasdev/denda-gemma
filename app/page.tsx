@@ -197,6 +197,17 @@ export default function GuestPage() {
                       <div>
                         <p className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest leading-none">{fine.type}</p>
                         <p className="text-lg font-black text-zinc-900 mt-1">Rp {fine.amount.toLocaleString('id-ID')}</p>
+                        {fine.created_at && (
+                          <div className="flex items-center gap-1 text-[8px] font-bold text-zinc-300 uppercase mt-2 tracking-tighter">
+                            <Calendar size={10} />
+                            {new Date(fine.created_at).toLocaleDateString('id-ID', { 
+                              weekday: 'long', 
+                              day: '2-digit', 
+                              month: 'short', 
+                              year: 'numeric' 
+                            })}
+                          </div>
+                        )}
                       </div>
                     </div>
                   </div>
