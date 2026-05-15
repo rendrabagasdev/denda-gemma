@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
-import { ArrowLeft, History, User, Banknote, Calendar, Search } from 'lucide-react'
+import { ArrowLeft, History, User, Banknote, Calendar, Search, Home } from 'lucide-react'
 import { motion } from 'framer-motion'
 
 interface PaymentHistory {
@@ -59,36 +59,77 @@ export default function AdminHistoryPage() {
   )
 
   return (
-    <main className="max-w-md mx-auto h-[100dvh] flex flex-col bg-zinc-50/30 overflow-hidden relative">
-      {/* Header Same as Admin */}
-      <div className="p-6 pb-0 bg-transparent shrink-0">
-        <header className="mb-4 flex justify-between items-start">
+    <main className="min-h-[100dvh] flex bg-zinc-50/30 overflow-hidden relative font-sans">
+      {/* Desktop Sidebar (Same as Admin) */}
+      <aside className="hidden lg:flex w-72 flex-col bg-white border-r border-zinc-100 p-8 shrink-0">
+        <header className="mb-12">
           <h1 className="text-4xl font-black uppercase tracking-tighter leading-tight text-zinc-900">
             GEMMA<br/>
             <span className="text-success drop-shadow-sm">HISTORY</span>
           </h1>
-          <button 
-            onClick={() => router.push('/admin')}
-            className="p-3 bg-white rounded-2xl shadow-cartoon-sm hover:bg-zinc-50 transition-colors border border-zinc-100"
-          >
-            <ArrowLeft size={20} />
-          </button>
+          <p className="text-[10px] font-bold text-zinc-400 mt-2 uppercase tracking-[0.25em]">Arsip Pembayaran</p>
         </header>
 
-        <div className="relative mb-4">
-          <Search className="absolute left-5 top-1/2 -translate-y-1/2 text-zinc-300" size={18} />
-          <input 
-            type="text"
-            placeholder="Cari transaksi..."
-            className="cartoon-input w-full !pl-14 h-14 text-lg"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-          />
-        </div>
-      </div>
+        <nav className="flex-1 space-y-2">
+          <button 
+            onClick={() => router.push('/admin')}
+            className="w-full flex items-center gap-4 p-4 rounded-2xl font-bold text-zinc-400 hover:bg-zinc-50 hover:text-zinc-900 transition-all"
+          >
+            <Home size={20} />
+            <span>Dashboard</span>
+          </button>
+          <button 
+            className="w-full flex items-center gap-4 p-4 rounded-2xl font-bold bg-success text-black shadow-lg shadow-success/20 transition-all"
+          >
+            <History size={20} />
+            <span>Riwayat Transaksi</span>
+          </button>
+        </nav>
 
-      {/* List Area */}
-      <div className="flex-1 overflow-y-auto px-6 pb-20 space-y-4 no-scrollbar">
+        <button 
+          onClick={() => router.push('/admin')}
+          className="mt-auto flex items-center gap-3 p-4 text-zinc-400 hover:text-zinc-900 font-bold transition-colors"
+        >
+          <ArrowLeft size={20} />
+          <span>Kembali</span>
+        </button>
+      </aside>
+
+      {/* Main Content Area */}
+      <div className="flex-1 flex flex-col h-[100dvh] overflow-hidden">
+        {/* Mobile Header (Hidden on Desktop) */}
+        <div className="lg:hidden p-6 pb-0">
+          <header className="mb-4 flex justify-between items-start">
+            <h1 className="text-4xl font-black uppercase tracking-tighter leading-tight text-zinc-900">
+              GEMMA<br/>
+              <span className="text-success drop-shadow-sm">HISTORY</span>
+            </h1>
+            <button 
+              onClick={() => router.push('/admin')}
+              className="p-3 bg-white rounded-2xl shadow-cartoon-sm border border-zinc-100"
+            >
+              <ArrowLeft size={20} />
+            </button>
+          </header>
+        </div>
+
+        {/* Shared Search Bar */}
+        <div className="p-6 lg:p-10 pb-0">
+          <div className="relative mb-8 max-w-xl">
+            <Search className="absolute left-6 top-1/2 -translate-y-1/2 text-black/20" size={20} />
+            <input 
+              type="text"
+              placeholder="Cari transaksi..."
+              className="cartoon-input w-full !pl-16 h-16 text-lg bg-white shadow-sm border-zinc-100"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+            />
+          </div>
+        </div>
+
+        {/* History List Container */}
+        <div className="flex-1 overflow-y-auto px-6 lg:px-10 pb-20 no-scrollbar">
+          <div className="max-w-6xl">
         {loading ? (
           <div className="flex flex-col items-center justify-center py-20 gap-4">
             <div className="w-10 h-10 border-4 border-primary/20 border-t-primary rounded-full animate-spin"></div>
@@ -100,46 +141,51 @@ export default function AdminHistoryPage() {
             <p className="font-bold text-sm text-zinc-400 uppercase">Belum ada transaksi</p>
           </div>
         ) : (
-          filteredPayments.map((p, idx) => (
-            <motion.div 
-              key={p.id}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: idx * 0.03 }}
-              className="cartoon-card p-5 bg-white border border-zinc-100/50"
-            >
-              <div className="flex justify-between items-start mb-3">
-                <div className="flex items-center gap-3">
-                  <div className="p-3 bg-success/10 rounded-2xl">
-                    <User size={18} className="text-success" />
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+            {filteredPayments.map((p, idx) => (
+              <motion.div 
+                key={p.id}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: idx * 0.03 }}
+                className="cartoon-card p-6 bg-white border border-zinc-100/50 hover:shadow-lg transition-shadow"
+              >
+                <div className="flex justify-between items-start mb-4">
+                  <div className="flex items-center gap-4">
+                    <div className="p-4 bg-success/10 rounded-[1.5rem]">
+                      <User size={20} className="text-success" />
+                    </div>
+                    <div>
+                      <h4 className="font-black text-xl text-zinc-900 leading-tight">{p.members?.nama}</h4>
+                      <p className="text-[10px] font-bold text-zinc-400 uppercase tracking-[0.2em] mt-1">RT {p.members?.rt}</p>
+                    </div>
                   </div>
-                  <div>
-                    <h4 className="font-black text-lg text-zinc-900 leading-tight">{p.members?.nama}</h4>
-                    <p className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider">RT {p.members?.rt}</p>
+                  <div className="text-right">
+                    <div className="text-xl font-black text-success">+Rp {p.amount.toLocaleString('id-ID')}</div>
+                    <div className="flex items-center justify-end gap-1 text-[8px] font-bold text-zinc-300 uppercase mt-1">
+                      <Calendar size={10} />
+                      {new Date(p.created_at).toLocaleDateString('id-ID', { 
+                        weekday: 'short',
+                        day: '2-digit', 
+                        month: 'short', 
+                        year: 'numeric'
+                      })}
+                    </div>
                   </div>
                 </div>
-                <div className="text-right">
-                  <div className="text-lg font-black text-success">+Rp {p.amount.toLocaleString('id-ID')}</div>
-                  <div className="flex items-center justify-end gap-1 text-[8px] font-bold text-zinc-300 uppercase mt-1">
-                    <Calendar size={10} />
-                    {new Date(p.created_at).toLocaleDateString('id-ID', { 
-                      day: '2-digit', 
-                      month: 'short', 
-                      year: 'numeric'
-                    })}
-                  </div>
+                <div className="flex gap-2 flex-wrap pt-2 border-t border-zinc-50 mt-2">
+                  {p.categories?.map(cat => (
+                    <span key={cat} className="px-3 py-1 bg-zinc-50 text-zinc-400 text-[9px] font-black rounded-full uppercase tracking-widest border border-zinc-100">
+                      {cat}
+                    </span>
+                  ))}
                 </div>
-              </div>
-              <div className="flex gap-1.5 flex-wrap">
-                {p.categories?.map(cat => (
-                  <span key={cat} className="px-3 py-1 bg-zinc-50 text-zinc-400 text-[8px] font-bold rounded-full uppercase tracking-widest border border-zinc-100">
-                    {cat}
-                  </span>
-                ))}
-              </div>
-            </motion.div>
-          ))
+              </motion.div>
+            ))}
+          </div>
         )}
+          </div>
+        </div>
       </div>
     </main>
   )

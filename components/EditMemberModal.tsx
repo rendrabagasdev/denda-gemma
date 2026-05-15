@@ -29,7 +29,10 @@ export default function EditMemberModal({ member, fines, onClose, onComplete, is
       .update({ nama, rt })
       .eq('id', member.id)
     
-    if (!error) onComplete()
+    if (!error) {
+      onComplete()
+      onClose() // Auto close after saving name/RT
+    }
     setLoading(false)
   }
 
@@ -85,7 +88,12 @@ export default function EditMemberModal({ member, fines, onClose, onComplete, is
               {(['awal', 'rapat', 'kerjabakti'] as const).map(t => (
                 <button
                   key={t}
-                  onClick={() => setNewType(t)}
+                  onClick={() => {
+                    setNewType(t);
+                    if (t === 'rapat') setNewAmount('5000');
+                    else if (t === 'kerjabakti') setNewAmount('20000');
+                    else if (t === 'awal') setNewAmount('');
+                  }}
                   className={`py-2 rounded-xl border font-bold text-[10px] uppercase tracking-wider transition-all ${
                     newType === t ? 'bg-primary border-primary shadow-lg shadow-primary/20 text-black' : 'bg-white border-zinc-100 text-zinc-400 shadow-sm'
                   }`}

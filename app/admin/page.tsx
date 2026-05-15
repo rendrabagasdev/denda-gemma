@@ -8,6 +8,7 @@ import CartoonButton from '@/components/CartoonButton'
 import ImportExcel from '@/components/ImportExcel'
 import PaymentModal from '@/components/PaymentModal'
 import EditMemberModal from '@/components/EditMemberModal'
+import MemberCard from '@/components/MemberCard'
 import AddMemberModal from '@/components/AddMemberModal'
 import ExportData from '@/components/ExportData'
 import PaymentHistoryModal from '@/components/PaymentHistoryModal'
@@ -116,7 +117,7 @@ export default function AdminPage() {
 
   const filteredMembers = useMemo(() => 
     members.filter(m => {
-      const matchesSearch = m.nama.toLowerCase().includes(search.toLowerCase()) || m.rt.includes(search)
+      const matchesSearch = m.nama.toLowerCase().includes(search.toLowerCase())
       const matchesRT = selectedRT ? m.rt === selectedRT : true
       return matchesSearch && matchesRT
     }),
@@ -141,141 +142,209 @@ export default function AdminPage() {
   }
 
   const TikTokModal = ({ children, onClose, title }: { children: React.ReactNode, onClose: () => void, title?: string }) => (
-    <div className="fixed inset-0 z-[60] flex items-end justify-center bg-black/60 backdrop-blur-sm">
+    <div className="fixed inset-0 z-[60] flex items-end justify-center bg-black/20 backdrop-blur-sm">
       <motion.div 
         initial={{ y: "100%" }}
         animate={{ y: 0 }}
         exit={{ y: "100%" }}
-        transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-        className="w-full max-w-md bg-white rounded-t-[2.5rem] p-8 pb-12 shadow-[0_-20px_50px_rgba(0,0,0,0.1)] relative max-h-[95vh] flex flex-col border-t border-zinc-50"
+        transition={{ type: 'spring', damping: 30, stiffness: 300 }}
+        className="w-full bg-white rounded-t-[3rem] p-8 lg:p-16 shadow-[0_-20px_80px_rgba(0,0,0,0.15)] relative max-h-[60vh] flex flex-col border-t border-zinc-50"
       >
-        <div className="w-12 h-1.5 bg-black/10 rounded-full mx-auto mb-6 shrink-0" />
-        <div className="flex justify-between items-center mb-6 shrink-0">
-          {title && <h2 className="text-xl font-black uppercase tracking-tight">{title}</h2>}
-          <button onClick={onClose} className="ml-auto p-2 hover:bg-zinc-100 rounded-full transition-colors">
-            <X size={24} />
-          </button>
-        </div>
-        <div className="overflow-y-auto flex-1 no-scrollbar">
-          {children}
+        <div className="w-16 h-1.5 bg-zinc-100 rounded-full mx-auto mb-10 shrink-0 lg:hidden" />
+        <div className="overflow-y-auto no-scrollbar flex-1">
+          <div className="max-w-7xl mx-auto w-full">
+            <div className="flex justify-between items-center mb-10 shrink-0">
+              {title && <h2 className="text-xs font-black uppercase tracking-[0.4em] text-zinc-400">{title}</h2>}
+              <button 
+                onClick={onClose} 
+                className="p-3 bg-zinc-50 text-zinc-400 rounded-2xl hover:bg-zinc-100 transition-colors"
+              >
+                <X size={20} strokeWidth={3} />
+              </button>
+            </div>
+            {children}
+          </div>
         </div>
       </motion.div>
     </div>
   )
 
+  const SidebarButton = ({ icon, label, active, onClick }: { icon: any, label: string, active: boolean, onClick: () => void }) => (
+    <button 
+      onClick={onClick}
+      className={`w-full flex items-center gap-4 p-4 rounded-2xl font-bold transition-all ${
+        active ? 'bg-primary text-black shadow-lg shadow-primary/20' : 'text-zinc-400 hover:bg-zinc-50 hover:text-zinc-900'
+      }`}
+    >
+      {icon}
+      <span>{label}</span>
+    </button>
+  )
+
   return (
-    <main className="max-w-md mx-auto h-[100dvh] flex flex-col bg-zinc-50/30 overflow-hidden relative">
-      <div className="p-6 pb-0">
-        <header className="mb-4">
-          <h1 className="text-4xl font-black uppercase tracking-tighter leading-tight text-zinc-900">
+    <main className="min-h-[100dvh] flex bg-zinc-50/30 overflow-hidden relative font-sans">
+      {/* Desktop Sidebar */}
+      <aside className="hidden lg:flex w-72 flex-col bg-white border-r border-zinc-100 p-8 shrink-0">
+        <header className="mb-6">
+          <h1 className="text-5xl lg:text-6xl font-black uppercase tracking-tighter leading-[0.8] text-zinc-900">
             GEMMA<br/>
-            <span className="text-primary drop-shadow-sm">ADMIN</span>
+            <span className="text-[#ffdc00] drop-shadow-sm">ADMIN</span>
           </h1>
+          <p className="text-[10px] font-black text-zinc-300 mt-4 uppercase tracking-[0.3em]">Manajemen Wilayah</p>
         </header>
 
-        <div className="relative mb-4">
-          <Search className="absolute left-5 top-1/2 -translate-y-1/2 text-black/40" size={20} />
-          <input 
-            type="text"
-            placeholder="Cari anggota atau RT..."
-            className="cartoon-input w-full !pl-16 h-14 text-lg shadow-cartoon-sm"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
+        <nav className="flex-1 space-y-2">
+          <SidebarButton 
+            icon={<Home size={20} />} 
+            label="Dashboard" 
+            active={!activeModal} 
+            onClick={() => setActiveModal(null)} 
           />
+          <SidebarButton 
+            icon={<History size={20} />} 
+            label="Riwayat" 
+            active={false} 
+            onClick={() => router.push('/admin/history')} 
+          />
+          <SidebarButton 
+            icon={<Download size={20} />} 
+            label="Import Data" 
+            active={activeModal === 'import'} 
+            onClick={() => setActiveModal('import')} 
+          />
+          <SidebarButton 
+            icon={<FileSpreadsheet size={20} />} 
+            label="Export" 
+            active={activeModal === 'export'} 
+            onClick={() => setActiveModal('export')} 
+          />
+        </nav>
+
+        <button 
+          onClick={handleLogout}
+          className="mt-auto flex items-center gap-3 p-4 text-zinc-400 hover:text-secondary font-bold transition-colors group"
+        >
+          <LogOut size={20} className="group-hover:translate-x-1 transition-transform" />
+          <span>Logout</span>
+        </button>
+      </aside>
+
+      {/* Main Content Area */}
+      <div className="flex-1 flex flex-col h-[100dvh] overflow-hidden">
+        {/* Mobile Header (Hidden on Desktop) */}
+        <div className="lg:hidden p-6 pb-0">
+          <header className="mb-2">
+            <h1 className="text-4xl font-black uppercase tracking-tighter leading-tight text-zinc-900">
+              GEMMA<br/>
+              <span className="text-[#ffdc00] drop-shadow-sm">ADMIN</span>
+            </h1>
+          </header>
         </div>
 
-        {/* RT Filter Bar */}
-        <div className="flex gap-2 overflow-x-auto pb-4 no-scrollbar">
-          <button 
-            onClick={() => setSelectedRT(null)}
-            className={`px-4 py-1.5 rounded-full border-2 border-black font-black text-[10px] uppercase transition-all whitespace-nowrap ${!selectedRT ? 'bg-black text-white' : 'bg-white text-black'}`}
-          >
-            Semua RT
-          </button>
-          {allRTs.map(rt => (
-            <button 
-              key={rt}
-              onClick={() => setSelectedRT(rt)}
-              className={`px-4 py-1.5 rounded-full border-2 border-black font-black text-[10px] uppercase transition-all whitespace-nowrap ${selectedRT === rt ? 'bg-primary text-black' : 'bg-white text-black'}`}
-            >
-              RT {rt}
-            </button>
-          ))}
-        </div>
-      </div>
-
-      <div className="flex-1 overflow-y-auto px-6 pb-40 space-y-4">
-        {loading ? (
-          <div className="flex flex-col items-center justify-center py-20 gap-4">
-            <div className="w-10 h-10 border-4 border-black border-t-primary rounded-full animate-spin"></div>
-            <p className="font-black opacity-40 uppercase text-xs">Sing sabar...</p>
-          </div>
-        ) : filteredMembers.length === 0 ? (
-          <div className="text-center py-20 bg-white rounded-3xl border-4 border-black border-dashed opacity-40">
-            <p className="font-black italic">Ora nemu data, Lur!</p>
-          </div>
-        ) : filteredMembers.map((member) => {
-          const mFines = fines.filter(f => f.member_id === member.id && !f.is_paid)
-          const total = mFines.reduce((s, f) => s + f.amount, 0)
-          
-          return (
-            <div key={member.id} className="cartoon-card p-5 bg-white group hover:-translate-y-1 transition-all">
-              <div className="flex justify-between items-start mb-4">
-                <div>
-                  <h3 className="font-black text-xl leading-tight group-hover:text-primary transition-colors">{member.nama}</h3>
-                  <div className="flex items-center gap-2 mt-1">
-                    <span className="text-[10px] font-black bg-black text-white px-2 py-0.5 rounded uppercase">RT {member.rt}</span>
-                  </div>
-                </div>
-                <div className="text-right">
-                  <p className="text-[8px] font-black uppercase opacity-40 mb-1">Tunggakan</p>
-                  <p className={`font-black text-xl ${total > 0 ? 'text-secondary' : 'text-success'}`}>
-                    Rp {total.toLocaleString('id-ID')}
-                  </p>
-                </div>
-              </div>
-              
-              <div className="flex gap-2">
-                <CartoonButton 
-                  variant="success" 
-                  className="flex-1 text-[10px] py-3 px-0 flex items-center justify-center gap-2"
-                  onClick={() => handleAction(member, 'payment')}
-                >
-                  <Wallet size={16} /> BAYAR
-                </CartoonButton>
-                <CartoonButton 
-                  variant="primary" 
-                  className="flex-1 text-[10px] py-3 px-0 flex items-center justify-center gap-2"
-                  onClick={() => handleAction(member, 'edit')}
-                >
-                  <Edit3 size={16} /> EDIT
-                </CartoonButton>
-                <button 
-                  className="p-3 border-4 border-black rounded-2xl bg-white hover:bg-red-50 text-red-500 shadow-cartoon-sm active:translate-y-1 transition-all"
-                  onClick={() => {
-                    setConfirmConfig({
-                      isOpen: true,
-                      title: 'Hapus Anggota?',
-                      message: `Hapus ${member.nama} secara permanen? Seluruh data denda akan hilang.`,
-                      type: 'danger',
-                      onConfirm: async () => {
-                        await supabase.from('members').delete().eq('id', member.id)
-                        fetchData()
-                        setConfirmConfig(prev => ({ ...prev, isOpen: false }))
-                      }
-                    })
-                  }}
-                >
-                  <Trash2 size={16} />
-                </button>
-              </div>
+        {/* Search & Filter Section */}
+        <div className="p-6 lg:p-10 pb-2">
+          <div className="max-w-xl space-y-3">
+            <div className="relative">
+              <Search className="absolute left-6 top-1/2 -translate-y-1/2 text-black/20" size={20} />
+              <input 
+                type="text"
+                placeholder="Cari anggota atau RT..."
+                className="cartoon-input w-full !pl-16 h-16 text-lg bg-white shadow-sm border-zinc-100"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+              />
             </div>
-          )
-        })}
+
+            {/* RT Filter Chips */}
+            <div className="flex gap-2 overflow-x-auto no-scrollbar pb-2">
+              {['SEMUA', '3', '4', '5', '6'].map((rtFilter) => (
+                <button
+                  key={rtFilter}
+                  onClick={() => setSelectedRT(rtFilter === 'SEMUA' ? null : rtFilter)}
+                  className={`px-6 py-2.5 rounded-full border-2 font-black text-[10px] uppercase tracking-wider transition-all shrink-0 ${
+                    ((rtFilter === 'SEMUA' && !selectedRT) || selectedRT === rtFilter)
+                      ? 'bg-[#ffdc00] border-black text-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]'
+                      : 'bg-white border-zinc-200 text-zinc-900'
+                  }`}
+                >
+                  {rtFilter === 'SEMUA' ? 'SEMUA RT' : `RT ${rtFilter}`}
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Member List */}
+        <div className="flex-1 overflow-y-auto px-6 lg:px-10 pb-20 no-scrollbar">
+          <div className="max-w-6xl">
+          {loading ? (
+            <div className="flex flex-col items-center justify-center py-20 gap-4">
+              <div className="w-12 h-12 border-4 border-primary/20 border-t-primary rounded-full animate-spin"></div>
+              <p className="font-bold text-zinc-400 uppercase text-[10px] tracking-[0.2em]">Memuat Data...</p>
+            </div>
+          ) : filteredMembers.length === 0 ? (
+            <div className="text-center py-20 bg-white rounded-[2.5rem] border border-dashed border-zinc-200">
+              <p className="font-bold text-zinc-300 uppercase tracking-widest">Data tidak ditemukan</p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-3 lg:gap-4">
+              {filteredMembers.map(member => {
+                const mFines = fines.filter(f => f.member_id === member.id && !f.is_paid)
+                return (
+                  <div key={member.id} className="group">
+                    <MemberCard 
+                      member={member} 
+                      fines={mFines} 
+                      onClick={() => handleAction(member, 'payment')}
+                    >
+                      <div className="flex gap-3 opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-all transform lg:translate-y-2 lg:group-hover:translate-y-0">
+                        <button 
+                          onClick={(e) => { e.stopPropagation(); handleAction(member, 'payment'); }}
+                          className="flex-[2] bg-[#22c55e] text-black h-14 rounded-full font-black text-xs uppercase tracking-widest flex items-center justify-center gap-2 hover:brightness-95 transition-all shadow-sm active:scale-95"
+                        >
+                          <Wallet size={20} strokeWidth={2.5} />
+                          <span>Bayar</span>
+                        </button>
+                        
+                        <button 
+                          onClick={(e) => { e.stopPropagation(); handleAction(member, 'edit'); }}
+                          className="flex-[2] bg-[#ffdc00] text-black h-14 rounded-full font-black text-xs uppercase tracking-widest flex items-center justify-center gap-2 hover:brightness-95 transition-all shadow-sm active:scale-95"
+                        >
+                          <Edit3 size={20} strokeWidth={2.5} />
+                          <span>Edit</span>
+                        </button>
+
+                        <button 
+                          onClick={(e) => { 
+                            e.stopPropagation();
+                            setConfirmConfig({
+                              isOpen: true,
+                              title: 'Hapus Anggota?',
+                              message: `Hapus ${member.nama} secara permanen?`,
+                              type: 'danger',
+                              onConfirm: async () => {
+                                await supabase.from('members').delete().eq('id', member.id)
+                                fetchData()
+                                setConfirmConfig(prev => ({ ...prev, isOpen: false }))
+                              }
+                            })
+                          }}
+                          className="flex-1 bg-white text-[#ff4b4b] h-14 w-14 rounded-[1.2rem] border-[3px] border-black flex items-center justify-center hover:bg-red-50 transition-all shadow-sm active:scale-95 shrink-0"
+                        >
+                          <Trash2 size={22} strokeWidth={2.5} />
+                        </button>
+                      </div>
+                    </MemberCard>
+                  </div>
+                )
+              })}
+            </div>
+          )}
+        </div>
       </div>
 
-      {/* Modern Playful Bottom Bar */}
-      <nav className="fixed bottom-0 left-0 right-0 p-4 pb-[calc(env(safe-area-inset-bottom)+1rem)] z-50 flex justify-center bg-gradient-to-t from-white/80 to-transparent">
+      {/* Mobile Nav (Hidden on Desktop) */}
+      <nav className="lg:hidden fixed bottom-0 left-0 right-0 p-4 pb-[calc(env(safe-area-inset-bottom)+1rem)] z-50 flex justify-center bg-gradient-to-t from-white/80 to-transparent">
         <div className="bg-white/90 backdrop-blur-xl text-black rounded-[2.5rem] p-3 shadow-[0_20px_50px_rgba(0,0,0,0.1)] flex items-center gap-1 w-[94%] max-w-sm justify-between border border-white">
           <NavButton 
             icon={<History size={20} />} 
@@ -357,7 +426,10 @@ export default function AdminPage() {
               member={selectedMember} 
               fines={fines.filter(f => f.member_id === selectedMember.id)}
               onClose={() => setActiveModal(null)}
-              onComplete={fetchData}
+              onComplete={() => {
+                fetchData();
+                // Optionally close here if desired, but we'll let EditMemberModal handle its own closing for specific actions
+              }}
               isEmbedded={true}
             />
           </TikTokModal>
@@ -367,6 +439,7 @@ export default function AdminPage() {
         {...confirmConfig}
         onCancel={() => setConfirmConfig(prev => ({ ...prev, isOpen: false }))}
       />
+        </div>
     </main>
   )
 }
