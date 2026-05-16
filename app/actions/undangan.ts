@@ -1,50 +1,47 @@
 'use server'
 
-import fs from 'fs'
-import path from 'path'
-import PizZip from 'pizzip'
-import Docxtemplater from 'docxtemplater'
+export async function convertDocxToPdf(base64Docx: string) {
+  const secret = process.env.CONVERT_API_SECRET
+  
+  if (!secret) {
+    throw new Error('CONVERT_API_SECRET belum dikonfigurasi di .env')
+  }
 
-export async function generateInvitation(member: { nama: string; rt: string }) {
   try {
-    const templatePath = path.resolve(process.cwd(), 'public/templates/undangan_template.docx')
-    
-    // Check if template exists
-    if (!fs.existsSync(templatePath)) {
-      throw new Error('Template file not found. Please upload undangan_template.docx to public/templates/')
+    const response = await fetch(`https://v2.convertapi.com/convert/docx/to/pdf?Secret=${secret}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        Parameters: [
+          {
+            Name: 'File',
+            FileValue: {
+              Name: 'undangan.docx',
+              Data: base64Docx
+            }
+          }
+        ]
+      })
+    })
+
+    if (!response.ok) {
+      const errorData = await response.json()
+      console.error('ConvertAPI Error:', errorData)
+      throw new Error('Gagal mengonversi dokumen ke PDF via API')
     }
 
-    const content = fs.readFileSync(templatePath, 'binary')
-    const zip = new PizZip(content)
-    const doc = new Docxtemplater(zip, {
-      paragraphLoop: true,
-      linebreaks: true,
-    })
-
-    // Set the data to replace in {{nama}} and {{rt}}
-    doc.render({
-      nama: member.nama,
-      rt: member.rt,
-      tanggal: new Date().toLocaleDateString('id-ID', {
-        day: 'numeric',
-        month: 'long',
-        year: 'numeric',
-      }),
-    })
-
-    const buf = doc.getZip().generate({
-      type: 'nodebuffer',
-      compression: 'DEFLATE',
-    })
-
-    // Return as base64 so it can be passed through Server Action
-    return {
-      success: true,
-      data: buf.toString('base64'),
-      filename: `Undangan_${member.nama.replace(/\s+/g, '_')}.docx`
+    const result = await response.json()
+    return { 
+      success: true, 
+      pdfUrl: result.Files[0].Url 
     }
   } catch (error: any) {
-    console.error('Error generating document:', error)
-    return { success: false, error: error.message }
+    console.error('Server Action Error:', error)
+    return { 
+      success: false, 
+      error: error.message 
+    }
   }
 }

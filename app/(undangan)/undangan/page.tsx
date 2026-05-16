@@ -16,6 +16,7 @@ import { saveAs } from 'file-saver'
 import mammoth from 'mammoth'
 import PizZip from 'pizzip'
 import Docxtemplater from 'docxtemplater'
+import { convertDocxToPdf } from '@/app/actions/undangan'
 
 export default function UndanganPage() {
   const router = useRouter()
@@ -135,31 +136,34 @@ export default function UndanganPage() {
       })
 
       try {
-        // KIRIM KE CONVERTAPI
-        const formData = new FormData()
-        formData.append('File', out, 'undangan_gemma.docx')
-        
-        const apiSecret = 'uW6pAnW097qI6N5P' 
-        const convertResponse = await fetch(`https://v2.convertapi.com/convert/docx/to/pdf?Secret=${apiSecret}`, {
-          method: 'POST',
-          body: formData
+        // 1. Ubah Blob ke Base64 untuk dikirim ke Server Action
+        const reader = new FileReader()
+        const base64Promise = new Promise<string>((resolve) => {
+          reader.onloadend = () => {
+            const base64String = (reader.result as string).split(',')[1]
+            resolve(base64String)
+          }
         })
+        reader.readAsDataURL(out)
+        const base64Docx = await base64Promise
 
-        if (!convertResponse.ok) throw new Error('API Konversi Gagal/Limit Tercapai')
+        // 2. Panggil Server Action
+        const result = await convertDocxToPdf(base64Docx)
 
-        const pdfResult = await convertResponse.json()
-        const pdfUrl = pdfResult.Files[0].Url
-        
-        const pdfFile = await fetch(pdfUrl)
+        if (!result.success || !result.pdfUrl) {
+          throw new Error(result.error || 'Gagal konversi')
+        }
+
+        // 3. Download hasil PDF
+        const pdfFile = await fetch(result.pdfUrl)
         const pdfBlob = await pdfFile.blob()
         saveAs(pdfBlob, `Undangan_GEMMA_${new Date().getTime()}.pdf`)
         
         toast.success('PDF berhasil dibuat!', { id: toastId })
       } catch (apiError) {
-        console.warn('PDF API Error, Falling back to Word:', apiError)
-        // FALLBACK: Jika API gagal, berikan file Word-nya saja
+        console.warn('PDF Conversion failed, falling back to Word:', apiError)
         saveAs(out, `Undangan_GEMMA_${new Date().getTime()}.docx`)
-        toast.success('API Limit/Error. Otomatis mengunduh format Word.', { id: toastId, duration: 5000 })
+        toast.success('Gagal PDF. Mengunduh format Word sebagai cadangan.', { id: toastId, duration: 5000 })
       }
     } catch (error) {
       console.error('Export Error:', error)
