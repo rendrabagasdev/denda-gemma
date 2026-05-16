@@ -6,6 +6,7 @@ import { supabase, Member } from '@/lib/supabase'
 import { getDashboardData } from '@/app/actions/denda'
 import { getTemplates, Template } from '@/app/actions/templates'
 import AdminSidebar from '@/components/AdminSidebar'
+import BottomBar from '@/components/BottomBar'
 import { Search, Download, FileText, CheckCircle2, ChevronLeft, Printer, Mail, Calendar, Info, X, Layout, Users, Edit2, ArrowLeft, ChevronDown } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import html2canvas from 'html2canvas'
@@ -715,6 +716,7 @@ export default function UndanganPage() {
           </div>
         )}
       </AnimatePresence>
+      <BottomBar />
     </div>
   )
 }

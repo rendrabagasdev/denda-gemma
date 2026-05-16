@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import { supabase, Member, Division } from '@/lib/supabase'
 import { getDashboardData, getDivisions } from '@/app/actions/denda'
 import AdminSidebar from '@/components/AdminSidebar'
+import BottomBar from '@/components/BottomBar'
 import { Search, Plus, Edit2, Trash2, CheckCircle2, Users, ChevronDown, X, Save, UserPlus, Info } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { toast } from 'react-hot-toast'
@@ -392,6 +393,7 @@ export default function AnggotaPage() {
           </div>
         )}
       </AnimatePresence>
+      <BottomBar />
     </div>
   )
 }

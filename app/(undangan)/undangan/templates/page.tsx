@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import AdminSidebar from '@/components/AdminSidebar'
+import BottomBar from '@/components/BottomBar'
 import { Plus, Layout, Edit3, Eye, Trash2, ChevronLeft, Search, FileText } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useRouter } from 'next/navigation'
@@ -194,6 +195,7 @@ export default function TemplatesPage() {
           </motion.div>
         )}
       </AnimatePresence>
+      <BottomBar />
     </main>
   )
 }
