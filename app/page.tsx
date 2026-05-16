@@ -87,12 +87,16 @@ export default function GuestPage() {
   )
 
   const TikTokModal = ({ children, onClose, title }: { children: React.ReactNode, onClose: () => void, title?: string }) => (
-    <div className="fixed inset-0 z-[60] flex items-end justify-center bg-black/20 backdrop-blur-sm">
+    <div 
+      onClick={onClose}
+      className="fixed inset-0 z-[60] flex items-end justify-center bg-black/20 backdrop-blur-sm"
+    >
       <motion.div 
         initial={{ y: "100%" }}
         animate={{ y: 0 }}
         exit={{ y: "100%" }}
-        transition={{ type: 'spring', damping: 30, stiffness: 300 }}
+        transition={{ type: 'tween', ease: "easeOut", duration: 0.3 }}
+        onClick={(e) => e.stopPropagation()}
         className="w-full bg-white rounded-t-[3rem] p-8 lg:p-16 shadow-[0_-20px_80px_rgba(0,0,0,0.15)] relative max-h-[60vh] flex flex-col border-t border-zinc-50"
       >
         <div className="w-16 h-1.5 bg-zinc-100 rounded-full mx-auto mb-10 shrink-0 lg:hidden" />

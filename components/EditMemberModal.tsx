@@ -51,6 +51,7 @@ export default function EditMemberModal({ member, fines, onClose, onComplete, is
     if (!error) {
       setNewAmount('')
       onComplete()
+      onClose() // Auto close after adding fine
     }
     setLoading(false)
   }
