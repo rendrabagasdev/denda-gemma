@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
+import AdminSidebar from '@/components/AdminSidebar'
 import { ArrowLeft, History, User, Banknote, Calendar, Search, Home } from 'lucide-react'
 import { motion } from 'framer-motion'
 
@@ -60,40 +61,7 @@ export default function AdminHistoryPage() {
 
   return (
     <main className="min-h-[100dvh] flex bg-zinc-50/30 overflow-hidden relative font-sans">
-      {/* Desktop Sidebar */}
-      <aside className="hidden lg:flex w-72 flex-col bg-white border-r border-zinc-100 p-8 shrink-0">
-        <header className="mb-6">
-          <h1 className="text-5xl font-black uppercase tracking-tighter leading-[0.8] text-zinc-900">
-            GEMMA<br/>
-            <span className="text-success drop-shadow-sm">HISTORY</span>
-          </h1>
-          <p className="text-[10px] font-black text-zinc-300 mt-4 uppercase tracking-[0.3em]">Arsip Pembayaran</p>
-        </header>
-
-        <nav className="flex-1 space-y-1.5">
-          <button 
-            onClick={() => router.push('/admin')}
-            className="w-full flex items-center gap-4 p-4 rounded-2xl font-bold text-zinc-400 hover:bg-zinc-50 hover:text-zinc-900 transition-all group"
-          >
-            <Home size={20} className="group-hover:-translate-y-0.5 transition-transform" />
-            <span>Dashboard</span>
-          </button>
-          <button 
-            className="w-full flex items-center gap-4 p-4 rounded-2xl font-bold bg-success text-black shadow-lg shadow-success/10 transition-all"
-          >
-            <History size={20} />
-            <span>Riwayat Transaksi</span>
-          </button>
-        </nav>
-
-        <button 
-          onClick={() => router.push('/admin')}
-          className="mt-auto flex items-center gap-3 p-4 text-zinc-400 hover:text-black font-bold transition-colors group"
-        >
-          <ArrowLeft size={20} className="group-hover:-translate-x-1 transition-transform" />
-          <span>Kembali</span>
-        </button>
-      </aside>
+      <AdminSidebar />
 
       {/* Main Content Area */}
       <div className="flex-1 flex flex-col h-[100dvh] overflow-hidden">

@@ -3,6 +3,7 @@
 import { useState, useEffect, useMemo } from 'react'
 import { useRouter } from 'next/navigation'
 import { supabase, Member, Fine } from '@/lib/supabase'
+import AdminSidebar from '@/components/AdminSidebar'
 import { Search, Plus, UserPlus, LogOut, Wallet, Edit3, Trash2, X, Download, History, Home, FileSpreadsheet } from 'lucide-react'
 import CartoonButton from '@/components/CartoonButton'
 import ImportExcel from '@/components/ImportExcel'
@@ -181,57 +182,13 @@ export default function AdminPage() {
       }`}
     >
       {icon}
-      <span>{label}</span>
+      <span className="text-[9px] font-black uppercase tracking-wider">{label}</span>
     </button>
   )
 
   return (
     <main className="min-h-[100dvh] flex bg-zinc-50/30 overflow-hidden relative font-sans">
-      {/* Desktop Sidebar */}
-      <aside className="hidden lg:flex w-72 flex-col bg-white border-r border-zinc-100 p-8 shrink-0">
-        <header className="mb-6">
-          <h1 className="text-5xl lg:text-6xl font-black uppercase tracking-tighter leading-[0.8] text-zinc-900">
-            GEMMA<br/>
-            <span className="text-[#ffdc00] drop-shadow-sm">ADMIN</span>
-          </h1>
-          <p className="text-[10px] font-black text-zinc-300 mt-4 uppercase tracking-[0.3em]">Manajemen Wilayah</p>
-        </header>
-
-        <nav className="flex-1 space-y-2">
-          <SidebarButton 
-            icon={<Home size={20} />} 
-            label="Dashboard" 
-            active={!activeModal} 
-            onClick={() => setActiveModal(null)} 
-          />
-          <SidebarButton 
-            icon={<History size={20} />} 
-            label="Riwayat" 
-            active={false} 
-            onClick={() => router.push('/admin/history')} 
-          />
-          <SidebarButton 
-            icon={<Download size={20} />} 
-            label="Import Data" 
-            active={activeModal === 'import'} 
-            onClick={() => setActiveModal('import')} 
-          />
-          <SidebarButton 
-            icon={<FileSpreadsheet size={20} />} 
-            label="Export" 
-            active={activeModal === 'export'} 
-            onClick={() => setActiveModal('export')} 
-          />
-        </nav>
-
-        <button 
-          onClick={handleLogout}
-          className="mt-auto flex items-center gap-3 p-4 text-zinc-400 hover:text-secondary font-bold transition-colors group"
-        >
-          <LogOut size={20} className="group-hover:translate-x-1 transition-transform" />
-          <span>Logout</span>
-        </button>
-      </aside>
+      <AdminSidebar onAction={setActiveModal} activeAction={activeModal} />
 
       {/* Main Content Area */}
       <div className="flex-1 flex flex-col h-[100dvh] overflow-hidden">
