@@ -5,15 +5,20 @@ import { usePathname } from 'next/navigation'
 import { FileText, Users, Layout, User, Home } from 'lucide-react'
 import { motion } from 'framer-motion'
 
-const navItems = [
-  { id: 'print', label: 'Cetak', icon: FileText, path: '/undangan' },
-  { id: 'anggota', label: 'Anggota', icon: Users, path: '/undangan/anggota' },
-  { id: 'templates', label: 'Template', icon: Layout, path: '/undangan/templates' },
-  { id: 'akun', label: 'Akun', icon: User, path: '/undangan/akun' },
-]
-
 export default function BottomBar({ mode = 'undangan' }: { mode?: 'undangan' | 'admin' }) {
   const pathname = usePathname()
+
+  const navItems = mode === 'undangan' ? [
+    { id: 'print', label: 'Cetak', icon: FileText, path: '/undangan' },
+    { id: 'anggota', label: 'Anggota', icon: Users, path: '/undangan/anggota' },
+    { id: 'templates', label: 'Template', icon: Layout, path: '/undangan/templates' },
+    { id: 'profil', label: 'Profil', icon: User, path: '/undangan/akun' },
+  ] : [
+    { id: 'dashboard', label: 'Home', icon: Home, path: '/admin' },
+    { id: 'anggota', label: 'Anggota', icon: Users, path: '/admin/anggota' },
+    { id: 'history', label: 'History', icon: FileText, path: '/admin/history' },
+    { id: 'profil', label: 'Profil', icon: User, path: '/admin/akun' },
+  ]
 
   // Base path matching logic
   const isActive = (path: string) => {

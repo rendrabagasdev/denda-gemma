@@ -14,8 +14,19 @@ const jakarta = Plus_Jakarta_Sans({
 });
 
 export const metadata: Metadata = {
-  title: "Denda Gemma - Catatan Denda Pemuda",
-  description: "Aplikasi pencatat denda organisasi pemuda pemudi desa",
+  title: {
+    template: "%s | GEMMA Tobratan",
+    default: "GEMMA Tobratan - Sistem Informasi Dusun Tobratan",
+  },
+  description: "Portal resmi Gerakan Masyarakat Muda Mudi (GEMMA) Dusun Tobratan. Sistem manajemen denda, undangan digital, dan administrasi organisasi kepemudaan.",
+  keywords: ["GEMMA Tobratan", "Dusun Tobratan", "Gerakan Masyarakat Muda Mudi", "Organisasi Pemuda", "Undangan Digital Tobratan", "Denda Gemma"],
+  authors: [{ name: "GEMMA Tobratan" }],
+  openGraph: {
+    title: "GEMMA Tobratan - Sistem Informasi Dusun",
+    description: "Sistem administrasi dan informasi Gerakan Masyarakat Muda Mudi Dusun Tobratan.",
+    type: "website",
+    locale: "id_ID",
+  }
 };
 
 import { Toaster } from "react-hot-toast"

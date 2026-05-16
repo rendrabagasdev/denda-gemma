@@ -401,16 +401,16 @@ export default function UndanganPage() {
   }, [members, search, filterRT, filterDivisi, filterJabatan])
 
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col lg:flex-row">
+    <div className="min-h-screen bg-slate-50 flex flex-col lg:flex-row overflow-hidden">
       <AdminSidebar mode="undangan" />
       
-      <main className="flex-1 p-4 lg:p-8 mt-16 lg:mt-0 overflow-x-hidden">
+      <main className="flex-1 p-4 lg:p-8 mt-16 lg:mt-0 overflow-y-auto h-screen pb-32 lg:pb-8">
         <div className="max-w-7xl mx-auto space-y-6">
           {/* Header Section */}
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div>
-              <h1 className="text-3xl font-black uppercase tracking-tighter text-zinc-900">Manajemen Undangan</h1>
-              <p className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest">{today}</p>
+              <h1 className="text-3xl font-black uppercase tracking-tighter text-zinc-900">GEMMA Tobratan</h1>
+              <p className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest">Sistem Undangan Digital Dusun Tobratan • {today}</p>
             </div>
             <div className="flex gap-2">
               <button 

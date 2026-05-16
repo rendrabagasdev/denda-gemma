@@ -14,6 +14,7 @@ import AddMemberModal from '@/components/denda/AddMemberModal'
 import ExportData from '@/components/denda/ExportData'
 import PaymentHistoryModal from '@/components/denda/PaymentHistoryModal'
 import ConfirmModal from '@/components/ConfirmModal'
+import BottomBar from '@/components/BottomBar'
 import { motion, AnimatePresence } from 'framer-motion'
 import { getDashboardData, invalidateMembersCache, invalidateFinesCache } from '@/app/actions/denda'
 import { toast } from 'react-hot-toast'
@@ -414,6 +415,7 @@ export default function AdminPage() {
         onCancel={() => setConfirmConfig(prev => ({ ...prev, isOpen: false }))}
       />
         </div>
+      <BottomBar mode="admin" />
     </main>
   )
 }

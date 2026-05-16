@@ -128,9 +128,9 @@ export default function GuestPage() {
           <div>
             <h1 className="text-4xl lg:text-6xl font-black uppercase tracking-tighter leading-tight text-zinc-900">
               GEMMA<br/>
-              <span className="text-primary drop-shadow-sm">TRACKER</span>
+              <span className="text-primary drop-shadow-sm">TOBRATAN</span>
             </h1>
-            <p className="text-[10px] lg:text-xs font-bold text-zinc-400 mt-2 lg:mt-4 uppercase tracking-[0.25em]">Youth Organization Fine System</p>
+            <p className="text-[10px] lg:text-xs font-bold text-zinc-400 mt-2 lg:mt-4 uppercase tracking-[0.25em]">Gerakan Masyarakat Muda Mudi Dusun Tobratan</p>
           </div>
 
           <div className="relative w-full lg:max-w-md">

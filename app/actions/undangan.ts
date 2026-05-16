@@ -4,7 +4,8 @@ export async function convertDocxToPdf(base64Docx: string) {
   const secret = process.env.CONVERT_API_SECRET
   
   if (!secret) {
-    throw new Error('CONVERT_API_SECRET belum dikonfigurasi di .env')
+    console.error('SERVER ERROR: CONVERT_API_SECRET is missing in .env')
+    return { success: false, error: 'Konfigurasi API Secret belum lengkap di server (.env).' }
   }
 
   try {

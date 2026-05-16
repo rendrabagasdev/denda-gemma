@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
 import AdminSidebar from '@/components/AdminSidebar'
+import BottomBar from '@/components/BottomBar'
 import { Shield, Key, Mail, User, Save, Lock, Info, LogOut, ChevronRight } from 'lucide-react'
 import { motion } from 'framer-motion'
 import { toast } from 'react-hot-toast'
@@ -182,6 +183,7 @@ export default function AkunDendaPage() {
           </div>
         </div>
       </main>
+      <BottomBar mode="admin" />
     </div>
   )
 }

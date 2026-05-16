@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
 import AdminSidebar from '@/components/AdminSidebar'
+import BottomBar from '@/components/BottomBar'
 import { ArrowLeft, History, User, Banknote, Calendar, Search, Home } from 'lucide-react'
 import { motion } from 'framer-motion'
 
@@ -154,25 +155,7 @@ export default function AdminHistoryPage() {
         )}
           </div>
         </div>
-      {/* Mobile Nav (Fixed at bottom) */}
-      <nav className="lg:hidden fixed bottom-0 left-0 right-0 p-4 pb-[calc(env(safe-area-inset-bottom)+1rem)] z-50 flex justify-center bg-linear-to-t from-white/80 to-transparent">
-        <div className="bg-white text-black rounded-[2.5rem] p-3 shadow-[0_20px_50px_rgba(0,0,0,0.1)] flex items-center gap-1 w-[94%] max-w-sm justify-between border border-white">
-          <NavButton 
-            icon={<Home size={20} />} 
-            label="Home" 
-            active={false} 
-            onClick={() => router.push('/admin')} 
-          />
-          <NavButton 
-            icon={<History size={20} />} 
-            label="History" 
-            active={true} 
-            onClick={() => {}} 
-          />
-          <div className="w-12 h-12" /> {/* Spacer for floating button if needed, but here just for layout balance */}
-          <div className="w-12 h-12" /> 
-        </div>
-      </nav>
+      <BottomBar mode="admin" />
         </div>
     </main>
   )
