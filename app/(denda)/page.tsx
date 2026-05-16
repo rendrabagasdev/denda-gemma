@@ -87,26 +87,26 @@ export default function GuestPage() {
   const TikTokModal = ({ children, onClose, title }: { children: React.ReactNode, onClose: () => void, title?: string }) => (
     <div 
       onClick={onClose}
-      className="fixed inset-0 z-60 flex items-end lg:items-center justify-center bg-black/40 p-4 lg:p-6"
+      className="fixed inset-0 z-60 flex items-end lg:items-center justify-center bg-black/40 lg:p-6"
     >
       <motion.div 
-        initial={{ y: "20%", opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        exit={{ y: "20%", opacity: 0 }}
-        transition={{ type: 'tween', ease: "easeOut", duration: 0.25 }}
+        initial={{ y: "100%" }}
+        animate={{ y: 0 }}
+        exit={{ y: "100%" }}
+        transition={{ type: 'spring', damping: 25, stiffness: 200 }}
         onClick={(e) => e.stopPropagation()}
-        className="w-full lg:max-w-2xl bg-white rounded-t-[3rem] lg:rounded-[3rem] p-8 lg:p-12 shadow-[0_-20px_80px_rgba(0,0,0,0.2)] lg:shadow-[0_40px_100px_rgba(0,0,0,0.25)] relative max-h-[60vh] lg:max-h-[85vh] flex flex-col border-t lg:border border-zinc-100 will-change-transform"
+        className="w-full lg:max-w-2xl bg-white rounded-t-[2.5rem] lg:rounded-[3rem] p-8 lg:p-12 shadow-[0_-8px_30px_rgba(0,0,0,0.1)] lg:shadow-[0_40px_100px_rgba(0,0,0,0.25)] relative max-h-[85vh] lg:max-h-[85vh] flex flex-col border-t lg:border border-zinc-100 will-change-transform"
       >
-        <div className="w-16 h-1.5 bg-zinc-100 rounded-full mx-auto mb-10 shrink-0 lg:hidden" />
-        <div className="overflow-y-auto no-scrollbar flex-1">
+        <div className="w-12 h-1.5 bg-zinc-100 rounded-full mx-auto mb-8 shrink-0 lg:hidden" />
+        <div className="overflow-y-auto no-scrollbar flex-1 pb-10">
           <div className="max-w-7xl mx-auto w-full">
             <div className="flex justify-between items-center mb-10 shrink-0">
-              {title && <h2 className="text-xs font-black uppercase tracking-[0.4em] text-zinc-400">{title}</h2>}
+              {title && <h2 className="text-[10px] font-black uppercase tracking-[0.4em] text-zinc-400">{title}</h2>}
               <button 
                 onClick={onClose} 
-                className="p-3 hover:bg-zinc-50 rounded-full transition-colors group"
+                className="p-2 hover:bg-zinc-50 rounded-full transition-colors group"
               >
-                <X size={28} className="text-zinc-300 group-hover:text-zinc-900 transition-colors" />
+                <X size={24} className="text-zinc-300 group-hover:text-zinc-900 transition-colors" />
               </button>
             </div>
             {children}
