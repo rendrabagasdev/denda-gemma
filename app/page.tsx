@@ -89,15 +89,15 @@ export default function GuestPage() {
   const TikTokModal = ({ children, onClose, title }: { children: React.ReactNode, onClose: () => void, title?: string }) => (
     <div 
       onClick={onClose}
-      className="fixed inset-0 z-[60] flex items-end justify-center bg-black/20 backdrop-blur-sm"
+      className="fixed inset-0 z-[60] flex items-end lg:items-center justify-center bg-black/20 backdrop-blur-sm p-4 lg:p-6"
     >
       <motion.div 
-        initial={{ y: "100%" }}
-        animate={{ y: 0 }}
-        exit={{ y: "100%" }}
+        initial={{ y: "20%", opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        exit={{ y: "20%", opacity: 0 }}
         transition={{ type: 'tween', ease: "easeOut", duration: 0.3 }}
         onClick={(e) => e.stopPropagation()}
-        className="w-full bg-white rounded-t-[3rem] p-8 lg:p-16 shadow-[0_-20px_80px_rgba(0,0,0,0.15)] relative max-h-[60vh] flex flex-col border-t border-zinc-50"
+        className="w-full lg:max-w-2xl bg-white rounded-t-[3rem] lg:rounded-[3rem] p-8 lg:p-12 shadow-[0_-20px_80px_rgba(0,0,0,0.15)] lg:shadow-[0_40px_100px_rgba(0,0,0,0.2)] relative max-h-[60vh] lg:max-h-[85vh] flex flex-col border-t lg:border border-zinc-50"
       >
         <div className="w-16 h-1.5 bg-zinc-100 rounded-full mx-auto mb-10 shrink-0 lg:hidden" />
         <div className="overflow-y-auto no-scrollbar flex-1">

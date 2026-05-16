@@ -60,26 +60,26 @@ export default function AdminHistoryPage() {
 
   return (
     <main className="min-h-[100dvh] flex bg-zinc-50/30 overflow-hidden relative font-sans">
-      {/* Desktop Sidebar (Same as Admin) */}
+      {/* Desktop Sidebar */}
       <aside className="hidden lg:flex w-72 flex-col bg-white border-r border-zinc-100 p-8 shrink-0">
-        <header className="mb-12">
-          <h1 className="text-4xl font-black uppercase tracking-tighter leading-tight text-zinc-900">
+        <header className="mb-6">
+          <h1 className="text-5xl font-black uppercase tracking-tighter leading-[0.8] text-zinc-900">
             GEMMA<br/>
             <span className="text-success drop-shadow-sm">HISTORY</span>
           </h1>
-          <p className="text-[10px] font-bold text-zinc-400 mt-2 uppercase tracking-[0.25em]">Arsip Pembayaran</p>
+          <p className="text-[10px] font-black text-zinc-300 mt-4 uppercase tracking-[0.3em]">Arsip Pembayaran</p>
         </header>
 
-        <nav className="flex-1 space-y-2">
+        <nav className="flex-1 space-y-1.5">
           <button 
             onClick={() => router.push('/admin')}
-            className="w-full flex items-center gap-4 p-4 rounded-2xl font-bold text-zinc-400 hover:bg-zinc-50 hover:text-zinc-900 transition-all"
+            className="w-full flex items-center gap-4 p-4 rounded-2xl font-bold text-zinc-400 hover:bg-zinc-50 hover:text-zinc-900 transition-all group"
           >
-            <Home size={20} />
+            <Home size={20} className="group-hover:-translate-y-0.5 transition-transform" />
             <span>Dashboard</span>
           </button>
           <button 
-            className="w-full flex items-center gap-4 p-4 rounded-2xl font-bold bg-success text-black shadow-lg shadow-success/20 transition-all"
+            className="w-full flex items-center gap-4 p-4 rounded-2xl font-bold bg-success text-black shadow-lg shadow-success/10 transition-all"
           >
             <History size={20} />
             <span>Riwayat Transaksi</span>
@@ -88,9 +88,9 @@ export default function AdminHistoryPage() {
 
         <button 
           onClick={() => router.push('/admin')}
-          className="mt-auto flex items-center gap-3 p-4 text-zinc-400 hover:text-zinc-900 font-bold transition-colors"
+          className="mt-auto flex items-center gap-3 p-4 text-zinc-400 hover:text-black font-bold transition-colors group"
         >
-          <ArrowLeft size={20} />
+          <ArrowLeft size={20} className="group-hover:-translate-x-1 transition-transform" />
           <span>Kembali</span>
         </button>
       </aside>
@@ -186,7 +186,40 @@ export default function AdminHistoryPage() {
         )}
           </div>
         </div>
-      </div>
+      {/* Mobile Nav (Fixed at bottom) */}
+      <nav className="lg:hidden fixed bottom-0 left-0 right-0 p-4 pb-[calc(env(safe-area-inset-bottom)+1rem)] z-50 flex justify-center bg-gradient-to-t from-white/80 to-transparent">
+        <div className="bg-white/90 backdrop-blur-xl text-black rounded-[2.5rem] p-3 shadow-[0_20px_50px_rgba(0,0,0,0.1)] flex items-center gap-1 w-[94%] max-w-sm justify-between border border-white">
+          <NavButton 
+            icon={<Home size={20} />} 
+            label="Home" 
+            active={false} 
+            onClick={() => router.push('/admin')} 
+          />
+          <NavButton 
+            icon={<History size={20} />} 
+            label="History" 
+            active={true} 
+            onClick={() => {}} 
+          />
+          <div className="w-12 h-12" /> {/* Spacer for floating button if needed, but here just for layout balance */}
+          <div className="w-12 h-12" /> 
+        </div>
+      </nav>
+        </div>
     </main>
+  )
+}
+
+function NavButton({ icon, label, onClick, active }: { icon: any, label: string, onClick: () => void, active: boolean }) {
+  return (
+    <button 
+      onClick={onClick}
+      className={`flex flex-col items-center justify-center p-2 rounded-xl transition-all ${
+        active ? 'text-success' : 'text-zinc-400 hover:text-black'
+      }`}
+    >
+      <div>{icon}</div>
+      <span className="text-[9px] font-bold uppercase mt-1 leading-none tracking-tight">{label}</span>
+    </button>
   )
 }
