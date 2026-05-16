@@ -3,13 +3,14 @@
 import { useState, useEffect } from 'react'
 import AdminSidebar from '@/components/AdminSidebar'
 import BottomBar from '@/components/BottomBar'
-import { Plus, Layout, Edit3, Eye, Trash2, ChevronLeft, Search, FileText } from 'lucide-react'
+import { Plus, Layout, Edit3, Eye, Trash2, ChevronLeft, Search, FileText, Download } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useRouter } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
 import TemplateEditor from '@/components/undangan/TemplateEditor'
 import { toast } from 'react-hot-toast'
 import { getTemplates, saveTemplate, deleteTemplate, Template } from '@/app/actions/templates'
+import { saveAs } from 'file-saver'
 
 export default function TemplatesPage() {
   const router = useRouter()
@@ -47,6 +48,23 @@ export default function TemplatesPage() {
       category: 'Umum'
     })
     setIsEditorOpen(true)
+  }
+
+  const handleDownloadTemplate = async (template: Template) => {
+    if (!template.content.startsWith('http')) {
+      toast.error('Template ini tidak memiliki file fisik.')
+      return
+    }
+    
+    try {
+      const response = await fetch(template.content)
+      const blob = await response.blob()
+      saveAs(blob, `${template.name}.docx`)
+      toast.success('Template berhasil diunduh.')
+    } catch (err) {
+      console.error(err)
+      toast.error('Gagal mengunduh template.')
+    }
   }
 
   const handleEdit = (template: Template) => {
@@ -137,16 +155,22 @@ export default function TemplatesPage() {
                 <h3 className="text-xl font-black text-zinc-900 mb-2 truncate group-hover:text-primary transition-colors">{template.name}</h3>
                 <span className="text-[9px] font-bold uppercase text-zinc-400 tracking-widest">{template.category}</span>
                 
-                <div className="grid grid-cols-2 gap-3 mt-8">
+                <div className="grid grid-cols-2 gap-2 mt-8">
                   <button 
                     onClick={() => handleEdit(template)}
-                    className="h-12 bg-zinc-50 rounded-xl flex items-center justify-center gap-2 font-bold text-[10px] uppercase tracking-widest hover:bg-zinc-900 hover:text-white transition-all"
+                    className="h-10 bg-zinc-50 rounded-xl flex items-center justify-center gap-2 font-bold text-[10px] uppercase tracking-widest hover:bg-zinc-900 hover:text-white transition-all"
                   >
                     <Edit3 size={14} /> Edit
                   </button>
                   <button 
+                    onClick={() => handleDownloadTemplate(template)}
+                    className="h-10 bg-blue-50 text-blue-600 rounded-xl flex items-center justify-center gap-2 font-bold text-[10px] uppercase tracking-widest hover:bg-blue-600 hover:text-white transition-all"
+                  >
+                    <Download size={14} /> Docx
+                  </button>
+                  <button 
                     onClick={() => handleDelete(template.id)}
-                    className="h-12 border-2 border-zinc-50 rounded-xl flex items-center justify-center gap-2 font-bold text-[10px] uppercase tracking-widest hover:border-secondary hover:text-secondary transition-all"
+                    className="h-10 border-2 border-zinc-50 rounded-xl flex items-center justify-center gap-2 font-bold text-[10px] uppercase tracking-widest hover:border-secondary hover:text-secondary transition-all col-span-2"
                   >
                     <Trash2 size={14} /> Hapus
                   </button>

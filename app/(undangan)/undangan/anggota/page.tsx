@@ -3,7 +3,7 @@
 import { useState, useEffect, useMemo } from 'react'
 import { useRouter } from 'next/navigation'
 import { supabase, Member, Division } from '@/lib/supabase'
-import { getDashboardData, getDivisions } from '@/app/actions/denda'
+import { getDashboardData, getDivisions, invalidateMembersCache } from '@/app/actions/denda'
 import AdminSidebar from '@/components/AdminSidebar'
 import BottomBar from '@/components/BottomBar'
 import { Search, Plus, Edit2, Trash2, CheckCircle2, Users, ChevronDown, X, Save, UserPlus, Info } from 'lucide-react'
@@ -74,25 +74,35 @@ export default function AnggotaPage() {
     }
 
     try {
+      // Pastikan division_id dikirim sebagai null jika string kosong agar tidak error UUID
+      const dataToSave = {
+        ...formData,
+        division_id: formData.division_id || null
+      }
+
       if (editingMember) {
         const { error } = await supabase
           .from('members')
-          .update(formData)
+          .update(dataToSave)
           .eq('id', editingMember.id)
         if (error) throw error
         toast.success('Data warga berhasil diperbarui!')
       } else {
         const { error } = await supabase
           .from('members')
-          .insert([formData])
+          .insert([dataToSave])
         if (error) throw error
         toast.success('Warga baru berhasil ditambahkan!')
       }
+
+      // Invalidate Redis Cache agar data terbaru muncul
+      await invalidateMembersCache()
+      
       setIsModalOpen(false)
       fetchData()
     } catch (err) {
-      console.error(err)
-      toast.error('Gagal menyimpan data.')
+      console.error('Submit Error:', err)
+      toast.error('Gagal menyimpan data. Pastikan format data benar.')
     }
   }
 
@@ -101,6 +111,10 @@ export default function AnggotaPage() {
     try {
       const { error } = await supabase.from('members').delete().eq('id', id)
       if (error) throw error
+      
+      // Invalidate Redis Cache
+      await invalidateMembersCache()
+      
       toast.success('Data warga berhasil dihapus.')
       fetchData()
     } catch (err) {

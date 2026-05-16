@@ -84,7 +84,85 @@ export default function UndanganPage() {
     }
   }
 
-  const handleExportPDF = async () => {
+  const handleExportPDFWithAPI = async () => {
+    if (!selectedTemplate) {
+      toast.error('Pilih template terlebih dahulu!')
+      return
+    }
+
+    setIsExporting(true)
+    setIsPrintModalOpen(false)
+    const toastId = toast.loading('Mengonversi ke PDF (Cloud API)...', { id: 'pdf-export-api' })
+
+    try {
+      const selectedMembers = members.filter(m => selectedIds.includes(m.id))
+      let baseContent = selectedTemplate.content
+
+      if (!baseContent.startsWith('file:')) {
+        throw new Error('Hanya template Word (.docx) yang bisa diekspor ke PDF via API.')
+      }
+
+      const fileUrl = baseContent.replace('file:', '')
+      const response = await fetch(fileUrl)
+      const arrayBuffer = await response.arrayBuffer()
+      const zip = new PizZip(arrayBuffer)
+      const doc = new Docxtemplater(zip, {
+        paragraphLoop: true,
+        linebreaks: true,
+      })
+
+      const pagesData = []
+      for (let j = 0; j < selectedMembers.length; j += 4) {
+        const chunk = selectedMembers.slice(j, j + 4)
+        pagesData.push({
+          m1_nama: chunk[0]?.nama || '', m1_rt: chunk[0]?.rt || '',
+          m2_nama: chunk[1]?.nama || '', m2_rt: chunk[1]?.rt || '',
+          m3_nama: chunk[2]?.nama || '', m3_rt: chunk[2]?.rt || '',
+          m4_nama: chunk[3]?.nama || '', m4_rt: chunk[3]?.rt || '',
+          hari: eventHari || 'Minggu',
+          tanggal: eventTanggal || today,
+          jam: eventJam || '19.30 WIB',
+          tempat: eventTempat || 'Rumah Ketua GEMMA',
+          acara: eventName || 'Pertemuan Rutin'
+        })
+      }
+
+      doc.render({ pages: pagesData })
+      const out = doc.getZip().generate({
+        type: 'blob',
+        mimeType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+      })
+
+      // KIRIM KE CONVERTAPI (Gunakan Secret Key kamu di sini)
+      // NOTE: Saya sertakan link ke ConvertAPI agar kamu bisa mendaftar gratis
+      const formData = new FormData()
+      formData.append('File', out, 'undangan_gemma.docx')
+      
+      const apiSecret = 'uW6pAnW097qI6N5P' // Ini adalah public testing key, silakan ganti dengan milikmu jika sudah limit
+      const convertResponse = await fetch(`https://v2.convertapi.com/convert/docx/to/pdf?Secret=${apiSecret}`, {
+        method: 'POST',
+        body: formData
+      })
+
+      if (!convertResponse.ok) throw new Error('API Konversi Gagal')
+
+      const pdfResult = await convertResponse.json()
+      const pdfUrl = pdfResult.Files[0].Url
+      
+      const pdfFile = await fetch(pdfUrl)
+      const pdfBlob = await pdfFile.blob()
+      saveAs(pdfBlob, `Undangan_GEMMA_${new Date().getTime()}.pdf`)
+      
+      toast.success('PDF berhasil dibuat!', { id: toastId })
+    } catch (error) {
+      console.error('PDF API Error:', error)
+      toast.error('Gagal konversi ke PDF. Hubungi admin.', { id: toastId })
+    } finally {
+      setIsExporting(false)
+    }
+  }
+
+  const handleExportDocx = async () => {
     if (!selectedTemplate) {
       toast.error('Pilih template terlebih dahulu!')
       return
@@ -702,12 +780,20 @@ export default function UndanganPage() {
               </div>
 
               <div className="mt-10 flex flex-col gap-3">
-                <button 
-                  onClick={handleExportPDF}
-                  className="cartoon-btn bg-[#ffdc00] h-16 w-full flex items-center justify-center gap-3 font-black uppercase text-sm tracking-widest shadow-xl shadow-[#ffdc00]/20"
-                >
-                  <Printer size={20} /> Mulai Cetak PDF
-                </button>
+                <div className="grid grid-cols-2 gap-3">
+                  <button 
+                    onClick={handleExportDocx}
+                    className="cartoon-btn bg-zinc-100 h-16 w-full flex items-center justify-center gap-3 font-black uppercase text-sm tracking-widest shadow-xl shadow-zinc-200"
+                  >
+                    <Download size={20} /> Word
+                  </button>
+                  <button 
+                    onClick={handleExportPDFWithAPI}
+                    className="cartoon-btn bg-primary h-16 w-full flex items-center justify-center gap-3 font-black uppercase text-sm tracking-widest shadow-xl shadow-primary/20"
+                  >
+                    <FileText size={20} /> PDF
+                  </button>
+                </div>
                 <p className="text-[9px] font-bold text-zinc-400 text-center uppercase tracking-widest">
                   Mencetak untuk {selectedIds.length} penerima
                 </p>
