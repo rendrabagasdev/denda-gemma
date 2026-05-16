@@ -42,12 +42,18 @@ export default function UndanganPage() {
   const [eventName, setEventName] = useState('')
   const invitationRef = useRef<HTMLDivElement>(null)
   
-  const today = new Date().toLocaleDateString('id-ID', {
-    weekday: 'long',
-    day: 'numeric',
-    month: 'long',
-    year: 'numeric'
-  })
+  const [today, setToday] = useState('')
+  const [isMounted, setIsMounted] = useState(false)
+ 
+  useEffect(() => {
+    setToday(new Date().toLocaleDateString('id-ID', {
+      weekday: 'long',
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric'
+    }))
+    setIsMounted(true)
+  }, [])
 
   useEffect(() => {
     const checkUser = async () => {
@@ -146,6 +152,9 @@ export default function UndanganPage() {
         })
         reader.readAsDataURL(out)
         const base64Docx = await base64Promise
+        if (!base64Docx) {
+          throw new Error('Gagal memproses file Word ke format Base64.')
+        }
 
         // 2. Panggil Server Action
         const result = await convertDocxToPdf(base64Docx)
@@ -399,6 +408,8 @@ export default function UndanganPage() {
         return a.nama.localeCompare(b.nama)
       })
   }, [members, search, filterRT, filterDivisi, filterJabatan])
+
+  if (!isMounted) return null
 
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col lg:flex-row overflow-hidden">
