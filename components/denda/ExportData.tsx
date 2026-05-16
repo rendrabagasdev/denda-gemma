@@ -1,7 +1,7 @@
 'use client'
 
 import * as XLSX from 'xlsx'
-import CartoonButton from './CartoonButton'
+import CartoonButton from '@/components/CartoonButton'
 import { FileSpreadsheet } from 'lucide-react'
 import { Member, Fine } from '@/lib/supabase'
 

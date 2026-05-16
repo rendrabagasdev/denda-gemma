@@ -5,10 +5,20 @@ const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || ''
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey)
 
+export type Division = {
+  id: string
+  name: string
+  created_at: string
+}
+
 export type Member = {
   id: string
   nama: string
   rt: string
+  divisi?: string // Kolom lama (untuk fallback)
+  division_id?: string // Foreign Key baru
+  divisions?: Division // Hasil Join
+  jabatan?: string
   created_at: string
 }
 

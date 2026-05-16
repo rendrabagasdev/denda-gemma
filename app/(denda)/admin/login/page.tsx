@@ -2,24 +2,33 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { supabase } from '@/lib/supabase'
 import CartoonButton from '@/components/CartoonButton'
 import { Lock, User, ShieldCheck } from 'lucide-react'
 import { motion } from 'framer-motion'
 
 export default function LoginPage() {
+  const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const router = useRouter()
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
-    // Simple mock logic for village app
-    // You can replace this with Supabase Auth (supabase.auth.signInWithPassword)
-    if (password === 'admin123') {
-      localStorage.setItem('admin_auth', 'true')
-      router.push('/admin')
+    setLoading(true)
+    setError('')
+    
+    const { error: authError } = await supabase.auth.signInWithPassword({
+      email,
+      password
+    })
+
+    if (authError) {
+      setError(authError.message)
+      setLoading(false)
     } else {
-      setError('Password salah!')
+      router.push('/admin')
     }
   }
 
@@ -42,13 +51,29 @@ export default function LoginPage() {
           <p className="text-[10px] font-bold text-zinc-400 uppercase tracking-[0.2em] mt-2">Denda Gemma Portal</p>
         </div>
 
-        <form onSubmit={handleLogin} className="space-y-8">
+        <form onSubmit={handleLogin} className="space-y-6">
+          <div>
+            <label className="block font-bold mb-3 uppercase text-[10px] tracking-[0.2em] text-zinc-400">Email Address</label>
+            <div className="relative">
+              <User className="absolute left-5 top-1/2 -translate-y-1/2 text-zinc-300" size={20} />
+              <input 
+                type="email"
+                required
+                className="cartoon-input w-full pl-16! h-16 text-lg"
+                placeholder="admin@gemma.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
+            </div>
+          </div>
+
           <div>
             <label className="block font-bold mb-3 uppercase text-[10px] tracking-[0.2em] text-zinc-400">Security Key</label>
             <div className="relative">
               <Lock className="absolute left-5 top-1/2 -translate-y-1/2 text-zinc-300" size={20} />
               <input 
                 type="password"
+                required
                 className="cartoon-input w-full pl-16! h-16 text-lg"
                 placeholder="••••••••"
                 value={password}

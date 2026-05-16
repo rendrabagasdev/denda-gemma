@@ -1,0 +1,30 @@
+{
+  "menuItems": [
+    {
+      "id": "undangan-print",
+      "label": "Cetak Undangan",
+      "icon": "FileText",
+      "path": "/undangan"
+    },
+    {
+      "id": "anggota",
+      "label": "Data Anggota",
+      "icon": "Users",
+      "path": "/undangan/anggota"
+    },
+    {
+      "id": "templates",
+      "label": "Manajemen Template",
+      "icon": "Layout",
+      "path": "/undangan/templates"
+    }
+  ],
+  "actionItems": [
+    {
+      "id": "akun",
+      "label": "Kelola Akun",
+      "icon": "PlusSquare",
+      "path": "/undangan/akun"
+    }
+  ]
+}

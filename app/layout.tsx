@@ -18,6 +18,7 @@ export const metadata: Metadata = {
   description: "Aplikasi pencatat denda organisasi pemuda pemudi desa",
 };
 
+import { Toaster } from "react-hot-toast"
 import { Analytics } from "@vercel/analytics/next"
 
 export default function RootLayout({
@@ -31,6 +32,7 @@ export default function RootLayout({
       className={`${poppins.variable} ${jakarta.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
+        <Toaster position="top-center" />
         {children}
         <Analytics />
       </body>

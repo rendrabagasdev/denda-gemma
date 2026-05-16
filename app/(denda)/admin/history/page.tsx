@@ -156,7 +156,7 @@ export default function AdminHistoryPage() {
         </div>
       {/* Mobile Nav (Fixed at bottom) */}
       <nav className="lg:hidden fixed bottom-0 left-0 right-0 p-4 pb-[calc(env(safe-area-inset-bottom)+1rem)] z-50 flex justify-center bg-linear-to-t from-white/80 to-transparent">
-        <div className="bg-white/90 backdrop-blur-xl text-black rounded-[2.5rem] p-3 shadow-[0_20px_50px_rgba(0,0,0,0.1)] flex items-center gap-1 w-[94%] max-w-sm justify-between border border-white">
+        <div className="bg-white text-black rounded-[2.5rem] p-3 shadow-[0_20px_50px_rgba(0,0,0,0.1)] flex items-center gap-1 w-[94%] max-w-sm justify-between border border-white">
           <NavButton 
             icon={<Home size={20} />} 
             label="Home" 

@@ -6,16 +6,17 @@ import { supabase, Member, Fine } from '@/lib/supabase'
 import AdminSidebar from '@/components/AdminSidebar'
 import { Search, Plus, UserPlus, LogOut, Wallet, Edit3, Trash2, X, Download, History, Home, FileSpreadsheet } from 'lucide-react'
 import CartoonButton from '@/components/CartoonButton'
-import ImportExcel from '@/components/ImportExcel'
-import PaymentModal from '@/components/PaymentModal'
-import EditMemberModal from '@/components/EditMemberModal'
-import MemberCard from '@/components/MemberCard'
-import AddMemberModal from '@/components/AddMemberModal'
-import ExportData from '@/components/ExportData'
-import PaymentHistoryModal from '@/components/PaymentHistoryModal'
+import ImportExcel from '@/components/denda/ImportExcel'
+import PaymentModal from '@/components/denda/PaymentModal'
+import EditMemberModal from '@/components/denda/EditMemberModal'
+import MemberCard from '@/components/denda/MemberCard'
+import AddMemberModal from '@/components/denda/AddMemberModal'
+import ExportData from '@/components/denda/ExportData'
+import PaymentHistoryModal from '@/components/denda/PaymentHistoryModal'
 import ConfirmModal from '@/components/ConfirmModal'
 import { motion, AnimatePresence } from 'framer-motion'
-import { getCachedMembers, getCachedFines, invalidateMembersCache, invalidateFinesCache } from '@/app/actions/admin'
+import { getDashboardData, invalidateMembersCache, invalidateFinesCache } from '@/app/actions/denda'
+import { toast } from 'react-hot-toast'
 
 export default function AdminPage() {
   const router = useRouter()
@@ -50,13 +51,16 @@ export default function AdminPage() {
   })
 
   useEffect(() => {
-    const auth = localStorage.getItem('admin_auth')
-    if (!auth) {
-      router.push('/admin/login')
-      return
+    const checkUser = async () => {
+      const { data: { user } } = await supabase.auth.getUser()
+      if (!user) {
+        router.push('/admin/login')
+      } else {
+        fetchData()
+      }
     }
     
-    fetchData()
+    checkUser()
 
     // Realtime subscription
     const channel = supabase
@@ -96,24 +100,11 @@ export default function AdminPage() {
   const [selectedRT, setSelectedRT] = useState<string | null>(null)
 
   const fetchData = async () => {
-    // 1. Try Redis Cache via Server Action (Parallel)
-    const [cachedMembers, cachedFines] = await Promise.all([
-      getCachedMembers(),
-      getCachedFines()
-    ])
-
-    if (cachedMembers && cachedFines) {
-      setMembers(cachedMembers)
-      setFines(cachedFines)
-      setLoading(false)
-      return // Exit early if we have everything
-    }
-
-    // 2. Fallback to Supabase if any cache is missing
     setLoading(true)
-    const { data: membersData } = await supabase.from('members').select('*')
-    const { data: finesData } = await supabase.from('fines').select('*')
     
+    // Optimized: Single call for all data via Redis Pipeline
+    const { members: membersData, fines: finesData } = await getDashboardData()
+
     if (membersData) {
       const sorted = [...membersData].sort((a, b) => {
         const rtA = parseInt(a.rt) || 0
@@ -161,6 +152,7 @@ export default function AdminPage() {
       }
     })
   }
+
 
   const TikTokModal = ({ children, onClose, title }: { children: React.ReactNode, onClose: () => void, title?: string }) => (
     <div 
@@ -278,22 +270,23 @@ export default function AdminPage() {
                       fines={mFines} 
                       onClick={() => handleAction(member, 'payment')}
                     >
-                      <div className="flex gap-3 opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-all transform lg:translate-y-2 lg:group-hover:translate-y-0">
+                      <div className="flex flex-wrap gap-3 opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-all transform lg:translate-y-2 lg:group-hover:translate-y-0">
                         <button 
                           onClick={(e) => { e.stopPropagation(); handleAction(member, 'payment'); }}
-                          className="flex-2 bg-[#22c55e] text-black h-14 rounded-full font-black text-xs uppercase tracking-widest flex items-center justify-center gap-2 hover:brightness-95 transition-all shadow-sm active:scale-95"
+                          className="flex-1 min-w-[80px] bg-[#22c55e] text-black h-12 rounded-2xl font-black text-[10px] uppercase tracking-widest flex items-center justify-center gap-2 hover:brightness-95 transition-all shadow-sm active:scale-95"
                         >
-                          <Wallet size={20} strokeWidth={2.5} />
+                          <Wallet size={16} strokeWidth={2.5} />
                           <span>Bayar</span>
                         </button>
                         
                         <button 
                           onClick={(e) => { e.stopPropagation(); handleAction(member, 'edit'); }}
-                          className="flex-2 bg-[#ffdc00] text-black h-14 rounded-full font-black text-xs uppercase tracking-widest flex items-center justify-center gap-2 hover:brightness-95 transition-all shadow-sm active:scale-95"
+                          className="flex-1 min-w-[80px] bg-[#ffdc00] text-black h-12 rounded-2xl font-black text-[10px] uppercase tracking-widest flex items-center justify-center gap-2 hover:brightness-95 transition-all shadow-sm active:scale-95"
                         >
-                          <Edit3 size={20} strokeWidth={2.5} />
+                          <Edit3 size={16} strokeWidth={2.5} />
                           <span>Edit</span>
                         </button>
+
 
                         <button 
                           onClick={(e) => { 
@@ -310,9 +303,9 @@ export default function AdminPage() {
                               }
                             })
                           }}
-                          className="flex-1 bg-white text-[#ff4b4b] h-14 w-14 rounded-[1.2rem] border-[3px] border-black flex items-center justify-center hover:bg-red-50 transition-all shadow-sm active:scale-95 shrink-0"
+                          className="bg-white text-[#ff4b4b] h-12 w-12 rounded-2xl border-[3px] border-zinc-100 flex items-center justify-center hover:bg-red-50 transition-all shadow-sm active:scale-95 shrink-0"
                         >
-                          <Trash2 size={22} strokeWidth={2.5} />
+                          <Trash2 size={18} strokeWidth={2.5} />
                         </button>
                       </div>
                     </MemberCard>
@@ -326,7 +319,7 @@ export default function AdminPage() {
 
       {/* Mobile Nav (Hidden on Desktop) */}
       <nav className="lg:hidden fixed bottom-0 left-0 right-0 p-4 pb-[calc(env(safe-area-inset-bottom)+1rem)] z-50 flex justify-center bg-linear-to-t from-white/80 to-transparent">
-        <div className="bg-white/90 backdrop-blur-xl text-black rounded-[2.5rem] p-3 shadow-[0_20px_50px_rgba(0,0,0,0.1)] flex items-center gap-1 w-[94%] max-w-sm justify-between border border-white">
+        <div className="bg-white text-black rounded-[2.5rem] p-3 shadow-[0_20px_50px_rgba(0,0,0,0.1)] flex items-center gap-1 w-[94%] max-w-sm justify-between border border-white">
           <NavButton 
             icon={<History size={20} />} 
             label="History" 

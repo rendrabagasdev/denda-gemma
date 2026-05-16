@@ -1,53 +1,57 @@
 'use client'
 
-import { Home, History, LogOut, Download, FileSpreadsheet, ArrowLeft } from 'lucide-react'
+import { Home, History, LogOut, Download, FileSpreadsheet, ArrowLeft, FileText, Users, Layout, PlusSquare } from 'lucide-react'
 import { useRouter, usePathname } from 'next/navigation'
+import { supabase } from '@/lib/supabase'
+import sidebarData from '@/data/sidebarDenda.json'
+import undanganSidebarData from '@/data/undangan_sidebar.json'
 
 interface AdminSidebarProps {
   onAction?: (action: any) => void
   activeAction?: string | null
+  mode?: 'denda' | 'undangan'
 }
 
-export default function AdminSidebar({ onAction, activeAction }: AdminSidebarProps) {
+// Icon mapping to convert string names to components
+const IconMap: Record<string, any> = {
+  Home: Home,
+  History: History,
+  FileText: FileText,
+  Download: Download,
+  FileSpreadsheet: FileSpreadsheet,
+  Users: Users,
+  Layout: Layout,
+  PlusSquare: PlusSquare
+}
+
+export default function AdminSidebar({ onAction, activeAction, mode = 'denda' }: AdminSidebarProps) {
   const router = useRouter()
   const pathname = usePathname()
+  
+  const currentData = mode === 'undangan' ? undanganSidebarData : sidebarData
 
-  const handleLogout = () => {
-    localStorage.removeItem('admin_auth')
-    router.push('/admin/login')
+  const handleLogout = async () => {
+    await supabase.auth.signOut()
+    router.push(mode === 'undangan' ? '/undangan/login' : '/admin/login')
   }
 
-  const menuItems = [
-    { 
-      id: 'dashboard',
-      label: 'Dashboard', 
-      icon: <Home size={20} />, 
-      path: '/admin',
-      isActive: pathname === '/admin' && !activeAction
-    },
-    { 
-      id: 'history',
-      label: 'Riwayat', 
-      icon: <History size={20} />, 
-      path: '/admin/history',
-      isActive: pathname === '/admin/history'
-    }
-  ]
+  const menuItems = currentData.menuItems.map(item => ({
+    ...item,
+    icon: IconMap[item.icon] ? <span className="shrink-0">{(() => {
+      const Icon = IconMap[item.icon]
+      return <Icon size={20} />
+    })()}</span> : null,
+    isActive: pathname === item.path && !activeAction
+  }))
 
-  const actionItems = [
-    { 
-      id: 'import',
-      label: 'Import Data', 
-      icon: <Download size={20} />, 
-      isActive: activeAction === 'import'
-    },
-    { 
-      id: 'export',
-      label: 'Export Excel', 
-      icon: <FileSpreadsheet size={20} />, 
-      isActive: activeAction === 'export'
-    }
-  ]
+  const actionItems = currentData.actionItems.map(item => ({
+    ...item,
+    icon: IconMap[item.icon] ? <span className="shrink-0">{(() => {
+      const Icon = IconMap[item.icon]
+      return <Icon size={20} />
+    })()}</span> : null,
+    isActive: activeAction === item.id
+  }))
 
   return (
     <aside className="hidden lg:flex w-72 flex-col bg-white border-r border-zinc-100 p-8 shrink-0">
@@ -56,7 +60,6 @@ export default function AdminSidebar({ onAction, activeAction }: AdminSidebarPro
           GEMMA<br/>
           <span className="text-[#ffdc00] drop-shadow-sm">ADMIN</span>
         </h1>
-        <p className="text-[10px] font-black text-zinc-300 mt-4 uppercase tracking-[0.3em]">Manajemen Denda</p>
       </header>
 
       <nav className="flex-1 space-y-1.5">

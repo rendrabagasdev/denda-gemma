@@ -1,0 +1,40 @@
+{
+  "menuItems": [
+    {
+      "id": "dashboard",
+      "label": "Dashboard",
+      "icon": "Home",
+      "path": "/admin"
+    },
+    {
+      "id": "anggota",
+      "label": "Data Anggota",
+      "icon": "Users",
+      "path": "/admin/anggota"
+    },
+    {
+      "id": "history",
+      "label": "Riwayat",
+      "icon": "History",
+      "path": "/admin/history"
+    },
+    {
+      "id": "akun",
+      "label": "Kelola Akun",
+      "icon": "PlusSquare",
+      "path": "/admin/akun"
+    }
+  ],
+  "actionItems": [
+    {
+      "id": "import",
+      "label": "Import Data",
+      "icon": "Download"
+    },
+    {
+      "id": "export",
+      "label": "Export Excel",
+      "icon": "FileSpreadsheet"
+    }
+  ]
+}

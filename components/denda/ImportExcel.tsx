@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import * as XLSX from 'xlsx'
 import { supabase } from '@/lib/supabase'
-import CartoonButton from './CartoonButton'
+import CartoonButton from '../CartoonButton'
 import { Upload, FileSpreadsheet, CheckCircle2, AlertCircle, FileCode } from 'lucide-react'
 
 export default function ImportData({ onComplete }: { onComplete: () => void }) {

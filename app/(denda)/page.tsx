@@ -2,10 +2,10 @@
 
 import { useState, useEffect, useMemo } from 'react'
 import { supabase, Member, Fine } from '@/lib/supabase'
-import MemberCard from '@/components/MemberCard'
+import MemberCard from '@/components/denda/MemberCard'
 import { Search, Trophy, Info, X, Banknote, Calendar, ChevronRight } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { getCachedMembers, getCachedFines } from '@/app/actions/admin'
+import { getDashboardData } from '@/app/actions/denda'
 
 export default function GuestPage() {
   const [members, setMembers] = useState<Member[]>([])
@@ -53,25 +53,11 @@ export default function GuestPage() {
   }, [])
 
   async function fetchData() {
-    // 1. Try Redis Cache First (Parallel)
-    const [cachedMembers, cachedFines] = await Promise.all([
-      getCachedMembers(),
-      getCachedFines()
-    ])
-
-    if (cachedMembers && cachedFines) {
-      setMembers(cachedMembers)
-      // For guest, we usually only care about unpaid fines
-      setFines(cachedFines.filter(f => !f.is_paid))
-      setLoading(false)
-      return
-    }
-
-    // 2. Fallback to Supabase
     setLoading(true)
-    const { data: membersData } = await supabase.from('members').select('*')
-    const { data: finesData } = await supabase.from('fines').select('*').eq('is_paid', false)
     
+    // Optimized: Single call for all data
+    const { members: membersData, fines: finesData } = await getDashboardData()
+
     if (membersData) {
       const sorted = [...membersData].sort((a, b) => {
         const rtA = parseInt(a.rt) || 0
@@ -83,7 +69,8 @@ export default function GuestPage() {
     }
     
     if (finesData) {
-      setFines(finesData)
+      // For guest, we usually only care about unpaid fines
+      setFines(finesData.filter(f => !f.is_paid))
     }
     
     setLoading(false)

@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { Member, Fine, supabase } from '@/lib/supabase'
-import CartoonButton from './CartoonButton'
+import CartoonButton from '../CartoonButton'
 import { X, Save, PlusCircle, Trash2, Banknote, Calendar } from 'lucide-react'
 
 interface EditMemberModalProps {
@@ -67,7 +67,7 @@ export default function EditMemberModal({ member, fines, onClose, onComplete, is
   }
 
   return (
-    <div className={isEmbedded ? "" : "fixed inset-0 z-50 flex items-end sm:items-center justify-center p-4 bg-black/60 backdrop-blur-sm"}>
+    <div className={isEmbedded ? "" : "fixed inset-0 z-50 flex items-end sm:items-center justify-center p-4 bg-black/60"}>
       <div className={isEmbedded ? "" : "cartoon-card w-full max-w-md bg-white p-6 relative animate-in fade-in slide-in-from-bottom-10 max-h-[90vh] overflow-y-auto"}>
         {!isEmbedded && (
           <button onClick={onClose} className="absolute right-4 top-4 p-2 hover:bg-zinc-100 rounded-full">
