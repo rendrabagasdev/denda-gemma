@@ -60,11 +60,11 @@ export default function AdminHistoryPage() {
   )
 
   return (
-    <main className="min-h-[100dvh] flex bg-zinc-50/30 overflow-hidden relative font-sans">
+    <main className="min-h-dvh flex bg-zinc-50/30 overflow-hidden relative font-sans">
       <AdminSidebar />
 
       {/* Main Content Area */}
-      <div className="flex-1 flex flex-col h-[100dvh] overflow-hidden">
+      <div className="flex-1 flex flex-col h-dvh overflow-hidden">
         {/* Mobile Header (Hidden on Desktop) */}
         <div className="lg:hidden p-6 pb-0">
           <header className="mb-4 flex justify-between items-start">
@@ -88,7 +88,7 @@ export default function AdminHistoryPage() {
             <input 
               type="text"
               placeholder="Cari transaksi..."
-              className="cartoon-input w-full !pl-16 h-16 text-lg bg-white shadow-sm border-zinc-100"
+              className="cartoon-input w-full pl-16! h-16 text-lg bg-white shadow-sm border-zinc-100"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
             />
@@ -120,7 +120,7 @@ export default function AdminHistoryPage() {
               >
                 <div className="flex justify-between items-start mb-4">
                   <div className="flex items-center gap-4">
-                    <div className="p-4 bg-success/10 rounded-[1.5rem]">
+                    <div className="p-4 bg-success/10 rounded-3xl">
                       <User size={20} className="text-success" />
                     </div>
                     <div>
@@ -155,7 +155,7 @@ export default function AdminHistoryPage() {
           </div>
         </div>
       {/* Mobile Nav (Fixed at bottom) */}
-      <nav className="lg:hidden fixed bottom-0 left-0 right-0 p-4 pb-[calc(env(safe-area-inset-bottom)+1rem)] z-50 flex justify-center bg-gradient-to-t from-white/80 to-transparent">
+      <nav className="lg:hidden fixed bottom-0 left-0 right-0 p-4 pb-[calc(env(safe-area-inset-bottom)+1rem)] z-50 flex justify-center bg-linear-to-t from-white/80 to-transparent">
         <div className="bg-white/90 backdrop-blur-xl text-black rounded-[2.5rem] p-3 shadow-[0_20px_50px_rgba(0,0,0,0.1)] flex items-center gap-1 w-[94%] max-w-sm justify-between border border-white">
           <NavButton 
             icon={<Home size={20} />} 

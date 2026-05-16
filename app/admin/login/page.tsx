@@ -49,7 +49,7 @@ export default function LoginPage() {
               <Lock className="absolute left-5 top-1/2 -translate-y-1/2 text-zinc-300" size={20} />
               <input 
                 type="password"
-                className="cartoon-input w-full !pl-16 h-16 text-lg"
+                className="cartoon-input w-full pl-16! h-16 text-lg"
                 placeholder="••••••••"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}

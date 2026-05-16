@@ -107,7 +107,7 @@ export default function EditMemberModal({ member, fines, onClose, onComplete, is
               <span className="absolute left-4 top-1/2 -translate-y-1/2 font-black text-zinc-300">Rp</span>
               <input 
                 type="number"
-                className="cartoon-input w-full !pl-12 !py-4" 
+                className="cartoon-input w-full pl-12! py-4!" 
                 value={newAmount} 
                 onChange={e => setNewAmount(e.target.value)}
                 placeholder="0"

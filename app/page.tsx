@@ -5,14 +5,24 @@ import { supabase, Member, Fine } from '@/lib/supabase'
 import MemberCard from '@/components/MemberCard'
 import { Search, Trophy, Info, X, Banknote, Calendar, ChevronRight } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
+import { getCachedMembers, getCachedFines } from '@/app/actions/admin'
 
 export default function GuestPage() {
   const [members, setMembers] = useState<Member[]>([])
   const [fines, setFines] = useState<Fine[]>([])
   const [search, setSearch] = useState('')
+  const [debouncedSearch, setDebouncedSearch] = useState('')
   const [loading, setLoading] = useState(true)
   const [selectedMember, setSelectedMember] = useState<Member | null>(null)
   const [isDetailOpen, setIsDetailOpen] = useState(false)
+
+  // Debounce search input
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedSearch(search)
+    }, 300)
+    return () => clearTimeout(timer)
+  }, [search])
 
   useEffect(() => {
     fetchData()
@@ -43,19 +53,22 @@ export default function GuestPage() {
   }, [])
 
   async function fetchData() {
-    // 1. Try Cache First for Instant UI
-    const cachedMembers = localStorage.getItem('cached_members')
-    const cachedFines = localStorage.getItem('cached_fines')
-    
+    // 1. Try Redis Cache First (Parallel)
+    const [cachedMembers, cachedFines] = await Promise.all([
+      getCachedMembers(),
+      getCachedFines()
+    ])
+
     if (cachedMembers && cachedFines) {
-      setMembers(JSON.parse(cachedMembers))
-      setFines(JSON.parse(cachedFines))
+      setMembers(cachedMembers)
+      // For guest, we usually only care about unpaid fines
+      setFines(cachedFines.filter(f => !f.is_paid))
       setLoading(false)
-    } else {
-      setLoading(true)
+      return
     }
 
-    // 2. Fetch Fresh Data
+    // 2. Fallback to Supabase
+    setLoading(true)
     const { data: membersData } = await supabase.from('members').select('*')
     const { data: finesData } = await supabase.from('fines').select('*').eq('is_paid', false)
     
@@ -67,12 +80,10 @@ export default function GuestPage() {
         return a.nama.localeCompare(b.nama)
       })
       setMembers(sorted)
-      localStorage.setItem('cached_members', JSON.stringify(sorted))
     }
     
     if (finesData) {
       setFines(finesData)
-      localStorage.setItem('cached_fines', JSON.stringify(finesData))
     }
     
     setLoading(false)
@@ -80,16 +91,16 @@ export default function GuestPage() {
 
   const filteredMembers = useMemo(() => 
     members.filter(m => {
-      const matchesSearch = search ? (m.nama.toLowerCase().includes(search.toLowerCase()) || m.rt.includes(search)) : false
+      const matchesSearch = debouncedSearch ? (m.nama.toLowerCase().includes(debouncedSearch.toLowerCase()) || m.rt.includes(debouncedSearch)) : false
       return matchesSearch
     }),
-    [members, search]
+    [members, debouncedSearch]
   )
 
   const TikTokModal = ({ children, onClose, title }: { children: React.ReactNode, onClose: () => void, title?: string }) => (
     <div 
       onClick={onClose}
-      className="fixed inset-0 z-[60] flex items-end lg:items-center justify-center bg-black/40 p-4 lg:p-6"
+      className="fixed inset-0 z-60 flex items-end lg:items-center justify-center bg-black/40 p-4 lg:p-6"
     >
       <motion.div 
         initial={{ y: "20%", opacity: 0 }}
@@ -119,10 +130,10 @@ export default function GuestPage() {
   )
 
   return (
-    <main className="min-h-[100dvh] flex flex-col bg-zinc-50/30 overflow-hidden relative font-sans">
+    <main className="min-h-dvh flex flex-col bg-zinc-50/30 overflow-hidden relative font-sans">
       {/* Decorative background blobs */}
-      <div className="fixed top-[-10%] right-[-10%] w-[40rem] h-[40rem] bg-primary/5 rounded-full blur-[120px] -z-10" />
-      <div className="fixed bottom-[-10%] left-[-10%] w-[30rem] h-[30rem] bg-secondary/5 rounded-full blur-[120px] -z-10" />
+      <div className="fixed top-[-10%] right-[-10%] w-160 h-160 bg-primary/5 rounded-full blur-[120px] -z-10" />
+      <div className="fixed bottom-[-10%] left-[-10%] w-120 h-120 bg-secondary/5 rounded-full blur-[120px] -z-10" />
 
       {/* Header Shared Responsive */}
       <div className="p-6 lg:p-12 pb-0 shrink-0">
@@ -140,7 +151,7 @@ export default function GuestPage() {
             <input 
               type="text"
               placeholder="Golek jenengmu..."
-              className="cartoon-input w-full !pl-16 h-16 text-lg bg-white shadow-xl shadow-black/5 border-none"
+              className="cartoon-input w-full pl-16! h-16 text-lg bg-white shadow-xl shadow-black/5 border-none"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
             />
@@ -241,7 +252,7 @@ export default function GuestPage() {
                 Rp {fines.filter(f => f.member_id === selectedMember.id).reduce((s, f) => s + f.amount, 0).toLocaleString('id-ID')}
               </p>
               <p className="text-[10px] font-bold text-zinc-400 text-center mt-4 uppercase leading-relaxed">
-                Silakan hubungi pengurus RT untuk melakukan pembayaran.
+                Silakan hubungi Ketua GEMMA untuk melakukan pembayaran.
               </p>
             </div>
           </TikTokModal>

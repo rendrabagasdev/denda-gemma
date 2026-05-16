@@ -15,14 +15,24 @@ import ExportData from '@/components/ExportData'
 import PaymentHistoryModal from '@/components/PaymentHistoryModal'
 import ConfirmModal from '@/components/ConfirmModal'
 import { motion, AnimatePresence } from 'framer-motion'
+import { getCachedMembers, getCachedFines, invalidateMembersCache, invalidateFinesCache } from '@/app/actions/admin'
 
 export default function AdminPage() {
   const router = useRouter()
   const [members, setMembers] = useState<Member[]>([])
   const [fines, setFines] = useState<Fine[]>([])
   const [search, setSearch] = useState('')
+  const [debouncedSearch, setDebouncedSearch] = useState('')
   const [loading, setLoading] = useState(true)
-  
+
+  // Debounce search input
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedSearch(search)
+    }, 300)
+    return () => clearTimeout(timer)
+  }, [search])
+
   const [selectedMember, setSelectedMember] = useState<Member | null>(null)
   const [activeModal, setActiveModal] = useState<'payment' | 'edit' | 'import' | 'add_member' | 'export' | 'history' | null>(null)
 
@@ -54,17 +64,27 @@ export default function AdminPage() {
       .on(
         'postgres_changes',
         { event: '*', schema: 'public', table: 'members' },
-        () => fetchData()
+        () => {
+          fetchData()
+          invalidateMembersCache()
+        }
       )
       .on(
         'postgres_changes',
         { event: '*', schema: 'public', table: 'fines' },
-        () => fetchData()
+        () => {
+          fetchData()
+          invalidateFinesCache()
+        }
       )
       .on(
         'postgres_changes',
         { event: '*', schema: 'public', table: 'payments' },
-        () => fetchData()
+        () => {
+          fetchData()
+          invalidateFinesCache()
+          invalidateMembersCache()
+        }
       )
       .subscribe()
 
@@ -76,19 +96,21 @@ export default function AdminPage() {
   const [selectedRT, setSelectedRT] = useState<string | null>(null)
 
   const fetchData = async () => {
-    // 1. Try Cache First for Instant UI
-    const cachedMembers = localStorage.getItem('admin_cached_members')
-    const cachedFines = localStorage.getItem('admin_cached_fines')
-    
+    // 1. Try Redis Cache via Server Action (Parallel)
+    const [cachedMembers, cachedFines] = await Promise.all([
+      getCachedMembers(),
+      getCachedFines()
+    ])
+
     if (cachedMembers && cachedFines) {
-      setMembers(JSON.parse(cachedMembers))
-      setFines(JSON.parse(cachedFines))
+      setMembers(cachedMembers)
+      setFines(cachedFines)
       setLoading(false)
-    } else {
-      setLoading(true)
+      return // Exit early if we have everything
     }
 
-    // 2. Fetch Fresh Data
+    // 2. Fallback to Supabase if any cache is missing
+    setLoading(true)
     const { data: membersData } = await supabase.from('members').select('*')
     const { data: finesData } = await supabase.from('fines').select('*')
     
@@ -100,12 +122,10 @@ export default function AdminPage() {
         return a.nama.localeCompare(b.nama)
       })
       setMembers(sorted)
-      localStorage.setItem('admin_cached_members', JSON.stringify(sorted))
     }
     
     if (finesData) {
       setFines(finesData)
-      localStorage.setItem('admin_cached_fines', JSON.stringify(finesData))
     }
     
     setLoading(false)
@@ -118,11 +138,11 @@ export default function AdminPage() {
 
   const filteredMembers = useMemo(() => 
     members.filter(m => {
-      const matchesSearch = m.nama.toLowerCase().includes(search.toLowerCase())
+      const matchesSearch = m.nama.toLowerCase().includes(debouncedSearch.toLowerCase())
       const matchesRT = selectedRT ? m.rt === selectedRT : true
       return matchesSearch && matchesRT
     }),
-    [members, search, selectedRT]
+    [members, debouncedSearch, selectedRT]
   )
 
   const handleAction = (member: Member, action: 'payment' | 'edit') => {
@@ -145,7 +165,7 @@ export default function AdminPage() {
   const TikTokModal = ({ children, onClose, title }: { children: React.ReactNode, onClose: () => void, title?: string }) => (
     <div 
       onClick={onClose}
-      className="fixed inset-0 z-[60] flex items-end lg:items-center justify-center bg-black/40 p-4 lg:p-6"
+      className="fixed inset-0 z-60 flex items-end lg:items-center justify-center bg-black/40 p-4 lg:p-6"
     >
       <motion.div 
         initial={{ y: "20%", opacity: 0 }}
@@ -187,11 +207,11 @@ export default function AdminPage() {
   )
 
   return (
-    <main className="min-h-[100dvh] flex bg-zinc-50/30 overflow-hidden relative font-sans">
+    <main className="min-h-dvh flex bg-zinc-50/30 overflow-hidden relative font-sans">
       <AdminSidebar onAction={setActiveModal} activeAction={activeModal} />
 
       {/* Main Content Area */}
-      <div className="flex-1 flex flex-col h-[100dvh] overflow-hidden">
+      <div className="flex-1 flex flex-col h-dvh overflow-hidden">
         {/* Mobile Header (Hidden on Desktop) */}
         <div className="lg:hidden p-6 pb-0">
           <header className="mb-2">
@@ -210,7 +230,7 @@ export default function AdminPage() {
               <input 
                 type="text"
                 placeholder="Cari anggota atau RT..."
-                className="cartoon-input w-full !pl-16 h-16 text-lg bg-white shadow-sm border-zinc-100"
+                className="cartoon-input w-full pl-16! h-16 text-lg bg-white shadow-sm border-zinc-100"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
               />
@@ -261,7 +281,7 @@ export default function AdminPage() {
                       <div className="flex gap-3 opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-all transform lg:translate-y-2 lg:group-hover:translate-y-0">
                         <button 
                           onClick={(e) => { e.stopPropagation(); handleAction(member, 'payment'); }}
-                          className="flex-[2] bg-[#22c55e] text-black h-14 rounded-full font-black text-xs uppercase tracking-widest flex items-center justify-center gap-2 hover:brightness-95 transition-all shadow-sm active:scale-95"
+                          className="flex-2 bg-[#22c55e] text-black h-14 rounded-full font-black text-xs uppercase tracking-widest flex items-center justify-center gap-2 hover:brightness-95 transition-all shadow-sm active:scale-95"
                         >
                           <Wallet size={20} strokeWidth={2.5} />
                           <span>Bayar</span>
@@ -269,7 +289,7 @@ export default function AdminPage() {
                         
                         <button 
                           onClick={(e) => { e.stopPropagation(); handleAction(member, 'edit'); }}
-                          className="flex-[2] bg-[#ffdc00] text-black h-14 rounded-full font-black text-xs uppercase tracking-widest flex items-center justify-center gap-2 hover:brightness-95 transition-all shadow-sm active:scale-95"
+                          className="flex-2 bg-[#ffdc00] text-black h-14 rounded-full font-black text-xs uppercase tracking-widest flex items-center justify-center gap-2 hover:brightness-95 transition-all shadow-sm active:scale-95"
                         >
                           <Edit3 size={20} strokeWidth={2.5} />
                           <span>Edit</span>
@@ -305,7 +325,7 @@ export default function AdminPage() {
       </div>
 
       {/* Mobile Nav (Hidden on Desktop) */}
-      <nav className="lg:hidden fixed bottom-0 left-0 right-0 p-4 pb-[calc(env(safe-area-inset-bottom)+1rem)] z-50 flex justify-center bg-gradient-to-t from-white/80 to-transparent">
+      <nav className="lg:hidden fixed bottom-0 left-0 right-0 p-4 pb-[calc(env(safe-area-inset-bottom)+1rem)] z-50 flex justify-center bg-linear-to-t from-white/80 to-transparent">
         <div className="bg-white/90 backdrop-blur-xl text-black rounded-[2.5rem] p-3 shadow-[0_20px_50px_rgba(0,0,0,0.1)] flex items-center gap-1 w-[94%] max-w-sm justify-between border border-white">
           <NavButton 
             icon={<History size={20} />} 
