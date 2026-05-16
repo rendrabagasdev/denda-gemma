@@ -12,6 +12,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import html2canvas from 'html2canvas'
 import jsPDF from 'jspdf'
 import { toast } from 'react-hot-toast'
+import { saveAs } from 'file-saver'
 import mammoth from 'mammoth'
 import PizZip from 'pizzip'
 import Docxtemplater from 'docxtemplater'
@@ -133,30 +134,36 @@ export default function UndanganPage() {
         mimeType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
       })
 
-      // KIRIM KE CONVERTAPI (Gunakan Secret Key kamu di sini)
-      // NOTE: Saya sertakan link ke ConvertAPI agar kamu bisa mendaftar gratis
-      const formData = new FormData()
-      formData.append('File', out, 'undangan_gemma.docx')
-      
-      const apiSecret = 'uW6pAnW097qI6N5P' // Ini adalah public testing key, silakan ganti dengan milikmu jika sudah limit
-      const convertResponse = await fetch(`https://v2.convertapi.com/convert/docx/to/pdf?Secret=${apiSecret}`, {
-        method: 'POST',
-        body: formData
-      })
+      try {
+        // KIRIM KE CONVERTAPI
+        const formData = new FormData()
+        formData.append('File', out, 'undangan_gemma.docx')
+        
+        const apiSecret = 'uW6pAnW097qI6N5P' 
+        const convertResponse = await fetch(`https://v2.convertapi.com/convert/docx/to/pdf?Secret=${apiSecret}`, {
+          method: 'POST',
+          body: formData
+        })
 
-      if (!convertResponse.ok) throw new Error('API Konversi Gagal')
+        if (!convertResponse.ok) throw new Error('API Konversi Gagal/Limit Tercapai')
 
-      const pdfResult = await convertResponse.json()
-      const pdfUrl = pdfResult.Files[0].Url
-      
-      const pdfFile = await fetch(pdfUrl)
-      const pdfBlob = await pdfFile.blob()
-      saveAs(pdfBlob, `Undangan_GEMMA_${new Date().getTime()}.pdf`)
-      
-      toast.success('PDF berhasil dibuat!', { id: toastId })
+        const pdfResult = await convertResponse.json()
+        const pdfUrl = pdfResult.Files[0].Url
+        
+        const pdfFile = await fetch(pdfUrl)
+        const pdfBlob = await pdfFile.blob()
+        saveAs(pdfBlob, `Undangan_GEMMA_${new Date().getTime()}.pdf`)
+        
+        toast.success('PDF berhasil dibuat!', { id: toastId })
+      } catch (apiError) {
+        console.warn('PDF API Error, Falling back to Word:', apiError)
+        // FALLBACK: Jika API gagal, berikan file Word-nya saja
+        saveAs(out, `Undangan_GEMMA_${new Date().getTime()}.docx`)
+        toast.success('API Limit/Error. Otomatis mengunduh format Word.', { id: toastId, duration: 5000 })
+      }
     } catch (error) {
-      console.error('PDF API Error:', error)
-      toast.error('Gagal konversi ke PDF. Hubungi admin.', { id: toastId })
+      console.error('Export Error:', error)
+      toast.error('Gagal memproses dokumen.', { id: 'pdf-export-api' })
     } finally {
       setIsExporting(false)
     }

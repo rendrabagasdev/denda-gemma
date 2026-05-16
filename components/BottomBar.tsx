@@ -53,7 +53,7 @@ export default function BottomBar({ mode = 'undangan' }: { mode?: 'undangan' | '
               {active && (
                 <motion.div 
                   layoutId="bottom-nav-active"
-                  className="absolute inset-x-2 inset-y-1 bg-zinc-50 rounded-3xl -z-0"
+                  className="absolute inset-x-2 inset-y-1 bg-zinc-50 rounded-3xl z-0"
                   transition={{ type: 'spring', bounce: 0.3, duration: 0.6 }}
                 />
               )}
