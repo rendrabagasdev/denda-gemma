@@ -36,9 +36,9 @@ export default function AnggotaPage() {
     fetchData()
   }, [])
 
-  const fetchData = async () => {
-    setLoading(true)
-    const { members: mData } = await getDashboardData()
+  const fetchData = async (isSilent = false, forceRefresh = false) => {
+    if (!isSilent) setLoading(true)
+    const { members: mData } = await getDashboardData({ forceRefresh })
     const dData = await getDivisions()
     if (mData) setMembers(mData)
     if (dData) setAllDivisions(dData)
@@ -99,7 +99,7 @@ export default function AnggotaPage() {
       await invalidateMembersCache()
       
       setIsModalOpen(false)
-      fetchData()
+      fetchData(true, true)
     } catch (err) {
       console.error('Submit Error:', err)
       toast.error('Gagal menyimpan data. Pastikan format data benar.')
@@ -107,8 +107,12 @@ export default function AnggotaPage() {
   }
 
   const handleDelete = async (id: string) => {
-    if (!confirm('Apakah Anda yakin ingin menghapus data warga ini?')) return
+    if (!confirm('Apakah Anda yakin ingin menghapus data warga ini? Seluruh data denda dan pembayaran terkait juga akan terhapus.')) return
     try {
+      // Manual cascade delete
+      await supabase.from('fines').delete().eq('member_id', id)
+      await supabase.from('payments').delete().eq('member_id', id)
+
       const { error } = await supabase.from('members').delete().eq('id', id)
       if (error) throw error
       
@@ -116,10 +120,10 @@ export default function AnggotaPage() {
       await invalidateMembersCache()
       
       toast.success('Data warga berhasil dihapus.')
-      fetchData()
-    } catch (err) {
+      fetchData(true, true)
+    } catch (err: any) {
       console.error(err)
-      toast.error('Gagal menghapus data.')
+      toast.error('Gagal menghapus data: ' + (err.message || 'Terjadi kesalahan'))
     }
   }
 

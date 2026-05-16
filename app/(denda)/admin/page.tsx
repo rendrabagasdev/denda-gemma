@@ -70,7 +70,7 @@ export default function AdminPage() {
         'postgres_changes',
         { event: '*', schema: 'public', table: 'members' },
         () => {
-          fetchData()
+          fetchData(true, true)
           invalidateMembersCache()
         }
       )
@@ -78,7 +78,7 @@ export default function AdminPage() {
         'postgres_changes',
         { event: '*', schema: 'public', table: 'fines' },
         () => {
-          fetchData()
+          fetchData(true, true)
           invalidateFinesCache()
         }
       )
@@ -86,7 +86,7 @@ export default function AdminPage() {
         'postgres_changes',
         { event: '*', schema: 'public', table: 'payments' },
         () => {
-          fetchData()
+          fetchData(true, true)
           invalidateFinesCache()
           invalidateMembersCache()
         }
@@ -100,11 +100,11 @@ export default function AdminPage() {
 
   const [selectedRT, setSelectedRT] = useState<string | null>(null)
 
-  const fetchData = async () => {
-    setLoading(true)
+  const fetchData = async (isSilent = false, forceRefresh = false) => {
+    if (!isSilent) setLoading(true)
     
     // Optimized: Single call for all data via Redis Pipeline
-    const { members: membersData, fines: finesData } = await getDashboardData()
+    const { members: membersData, fines: finesData } = await getDashboardData({ forceRefresh })
 
     if (membersData) {
       const sorted = [...membersData].sort((a, b) => {
@@ -298,8 +298,19 @@ export default function AdminPage() {
                               message: `Hapus ${member.nama} secara permanen?`,
                               type: 'danger',
                               onConfirm: async () => {
-                                await supabase.from('members').delete().eq('id', member.id)
-                                fetchData()
+                                try {
+                                  // Manual cascade delete
+                                  await supabase.from('fines').delete().eq('member_id', member.id)
+                                  await supabase.from('payments').delete().eq('member_id', member.id)
+                                  
+                                  const { error } = await supabase.from('members').delete().eq('id', member.id)
+                                  if (error) throw error
+                                  toast.success('Anggota berhasil dihapus')
+                                  fetchData()
+                                } catch (err: any) {
+                                  console.error(err)
+                                  toast.error('Gagal menghapus: ' + (err.message || 'Terjadi kesalahan'))
+                                }
                                 setConfirmConfig(prev => ({ ...prev, isOpen: false }))
                               }
                             })
@@ -360,7 +371,11 @@ export default function AdminPage() {
       <AnimatePresence>
         {activeModal === 'import' && (
           <TikTokModal title="Import Data" onClose={() => setActiveModal(null)}>
-            <ImportExcel onComplete={() => { fetchData(); setActiveModal(null); }} />
+            <ImportExcel onComplete={async () => { 
+              await invalidateMembersCache();
+              fetchData(true, true); 
+              setActiveModal(null); 
+            }} />
           </TikTokModal>
         )}
 
@@ -389,7 +404,10 @@ export default function AdminPage() {
               member={selectedMember} 
               fines={fines.filter(f => f.member_id === selectedMember.id)}
               onClose={() => setActiveModal(null)}
-              onComplete={fetchData}
+              onComplete={async () => {
+                await invalidateFinesCache();
+                fetchData(true, true);
+              }}
               isEmbedded={true}
             />
           </TikTokModal>
@@ -401,9 +419,9 @@ export default function AdminPage() {
               member={selectedMember} 
               fines={fines.filter(f => f.member_id === selectedMember.id)}
               onClose={() => setActiveModal(null)}
-              onComplete={() => {
-                fetchData();
-                // Optionally close here if desired, but we'll let EditMemberModal handle its own closing for specific actions
+              onComplete={async () => {
+                await invalidateFinesCache();
+                fetchData(true, true);
               }}
               isEmbedded={true}
             />

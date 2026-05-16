@@ -73,39 +73,49 @@ export default function AnggotaDendaPage() {
       return
     }
 
+    // Fix: Convert empty string to null for UUID field
+    const dataToSubmit = {
+      ...formData,
+      division_id: formData.division_id || null
+    }
+
     try {
       if (editingMember) {
         const { error } = await supabase
           .from('members')
-          .update(formData)
+          .update(dataToSubmit)
           .eq('id', editingMember.id)
         if (error) throw error
         toast.success('Data warga berhasil diperbarui!')
       } else {
         const { error } = await supabase
           .from('members')
-          .insert([formData])
+          .insert([dataToSubmit])
         if (error) throw error
         toast.success('Warga baru berhasil ditambahkan!')
       }
       setIsModalOpen(false)
       fetchData()
-    } catch (err) {
+    } catch (err: any) {
       console.error(err)
-      toast.error('Gagal menyimpan data.')
+      toast.error('Gagal menyimpan data: ' + (err.message || 'Terjadi kesalahan'))
     }
   }
 
   const handleDelete = async (id: string) => {
-    if (!confirm('Apakah Anda yakin ingin menghapus data warga ini?')) return
+    if (!confirm('Apakah Anda yakin ingin menghapus data warga ini? Seluruh data denda dan pembayaran terkait juga akan terhapus.')) return
     try {
+      // Delete associated data first (Cascade delete manual)
+      await supabase.from('fines').delete().eq('member_id', id)
+      await supabase.from('payments').delete().eq('member_id', id)
+      
       const { error } = await supabase.from('members').delete().eq('id', id)
       if (error) throw error
       toast.success('Data warga berhasil dihapus.')
       fetchData()
-    } catch (err) {
+    } catch (err: any) {
       console.error(err)
-      toast.error('Gagal menghapus data.')
+      toast.error('Gagal menghapus data: ' + (err.message || 'Terjadi kesalahan'))
     }
   }
 

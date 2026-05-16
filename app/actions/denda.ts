@@ -4,19 +4,21 @@ import { supabase } from '@/lib/supabase'
 import { redis, CACHE_KEYS } from '@/lib/redis'
 import { revalidatePath } from 'next/cache'
 
-export async function getDashboardData() {
+export async function getDashboardData(options?: { forceRefresh?: boolean }) {
   try {
-    // 1. Try Redis Cache via Pipeline (Single round-trip for all keys)
-    const p = redis.pipeline()
-    p.get(CACHE_KEYS.MEMBERS)
-    p.get(CACHE_KEYS.FINES)
-    const results = await p.exec()
-    
-    const cachedMembers = results[0] as any[] | null
-    const cachedFines = results[1] as any[] | null
+    // 1. Try Redis Cache via Pipeline (unless forceRefresh is requested)
+    if (!options?.forceRefresh) {
+      const p = redis.pipeline()
+      p.get(CACHE_KEYS.MEMBERS)
+      p.get(CACHE_KEYS.FINES)
+      const results = await p.exec()
+      
+      const cachedMembers = results[0] as any[] | null
+      const cachedFines = results[1] as any[] | null
 
-    if (cachedMembers && cachedFines) {
-      return { members: cachedMembers, fines: cachedFines }
+      if (cachedMembers && cachedFines) {
+        return { members: cachedMembers, fines: cachedFines }
+      }
     }
 
     // 2. Fallback to Supabase if any cache is missing
