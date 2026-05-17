@@ -357,6 +357,7 @@ export default function AnggotaDendaPage() {
                       <option value="Sekretaris">Sekretaris</option>
                       <option value="Bendahara">Bendahara</option>
                       <option value="Koordinator">Koordinator</option>
+                      <option value="Penasihat">Penasihat</option>
                     </select>
                   </div>
                 </div>
