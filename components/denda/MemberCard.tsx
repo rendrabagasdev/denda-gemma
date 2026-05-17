@@ -26,7 +26,7 @@ export default function MemberCard({ member, fines, onClick, children }: MemberC
         </div>
         <div className="text-right shrink-0">
           <p className="text-[10px] font-black text-zinc-300 uppercase tracking-widest mb-0.5">Tunggakan</p>
-          <p className="text-2xl font-black text-[#f59e0b] leading-none">
+          <p className={`text-2xl font-black leading-none ${totalDenda === 0 ? 'text-blue-500' : 'text-red-500'}`}>
             Rp {totalDenda.toLocaleString('id-ID')}
           </p>
         </div>

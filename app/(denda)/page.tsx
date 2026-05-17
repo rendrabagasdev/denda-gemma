@@ -127,17 +127,16 @@ export default function GuestPage() {
         <header className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 mb-8 lg:mb-12">
           <div>
             <h1 className="text-4xl lg:text-6xl font-black uppercase tracking-tighter leading-tight text-zinc-900">
-              GEMMA<br/>
-              <span className="text-primary drop-shadow-sm">TOBRATAN</span>
+              <img src="/logo-gemma.svg" alt="Logo Gemma" className="w-60 h-60 mx-auto relative -top-10  lg:w-40 lg:h-40 lg:relative lg:-top-10 lg:mx-0 lg:-left-5  " />
             </h1>
-            <p className="text-[10px] lg:text-xs font-bold text-zinc-400 mt-2 lg:mt-4 uppercase tracking-[0.25em]">Gerakan Masyarakat Muda Mudi Dusun Tobratan</p>
+            <p className="text-[10px] lg:text-xs font-bold text-zinc-400 lg:mt-4 uppercase tracking-[0.25em] relative -top-20 text-center lg:text-left">Gerakan Masyarakat Muda Mudi <br/> Dusun Tobratan</p>
           </div>
 
-          <div className="relative w-full lg:max-w-md">
+          <div className="relative w-full lg:max-w-4xl -top-20">
             <Search className="absolute left-6 top-1/2 -translate-y-1/2 text-black/20" size={22} />
             <input 
               type="text"
-              placeholder="Golek jenengmu..."
+              placeholder="Golek i jenengmu..."
               className="cartoon-input w-full pl-16! h-16 text-lg bg-white shadow-xl shadow-black/5 border-none"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
@@ -147,13 +146,13 @@ export default function GuestPage() {
       </div>
 
       {/* Content Area Responsive */}
-      <div className="flex-1 overflow-y-auto px-6 lg:px-12 pb-20 no-scrollbar">
+      <div className="flex-1 overflow-y-auto px-6 lg:px-12 pb-20 no-scrollbar relative -top-20">
         {!search ? (
           <div className="flex flex-col items-center justify-center py-20 lg:py-32 text-center">
             <div className="w-24 h-24 bg-white rounded-[2.5rem] flex items-center justify-center shadow-xl mb-6">
               <Search size={40} className="text-zinc-200" />
             </div>
-            <h2 className="text-xl font-black uppercase text-zinc-900">Golek Jenengmu</h2>
+            <h2 className="text-xl font-black uppercase text-zinc-900">Golek i Jenengmu</h2>
             <p className="text-sm font-bold text-zinc-400 mt-2 uppercase tracking-widest">Ketik jenengmu ing dhuwur kanggo cek denda</p>
           </div>
         ) : loading ? (

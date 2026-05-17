@@ -421,6 +421,7 @@ export default function AdminPage() {
               onClose={() => setActiveModal(null)}
               onComplete={async () => {
                 await invalidateFinesCache();
+                await invalidateMembersCache();
                 fetchData(true, true);
               }}
               isEmbedded={true}

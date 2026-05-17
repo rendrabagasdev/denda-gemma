@@ -76,9 +76,35 @@ export default function EditMemberModal({ member, fines, onClose, onComplete, is
         )}
 
         <h2 className={`text-2xl font-black mb-6 tracking-tight text-zinc-900 ${isEmbedded ? 'hidden' : 'block'}`}>Manajemen Denda</h2>
-        <div className="mb-8">
-          <p className="text-3xl font-black leading-tight tracking-tight text-zinc-900">{member.nama}</p>
-          <p className="text-[10px] font-bold text-zinc-400 uppercase tracking-[0.2em] mt-1">RT {member.rt}</p>
+        <div className="mb-8 space-y-4">
+          <div>
+            <label className="block font-black mb-2 uppercase text-[10px] tracking-widest text-zinc-400">Nama Lengkap</label>
+            <input 
+              type="text"
+              className="cartoon-input w-full"
+              value={nama}
+              onChange={e => setNama(e.target.value)}
+            />
+          </div>
+          <div>
+            <label className="block font-black mb-2 uppercase text-[10px] tracking-widest text-zinc-400">RT (Rukun Tetangga)</label>
+            <input 
+              type="text"
+              className="cartoon-input w-full"
+              value={rt}
+              onChange={e => setRt(e.target.value)}
+            />
+          </div>
+          {(nama !== member.nama || rt !== member.rt) && (
+            <CartoonButton
+              variant="primary"
+              onClick={handleUpdateMember}
+              disabled={loading || !nama || !rt}
+              className="w-full flex items-center justify-center gap-2 py-3 mt-2"
+            >
+              <Save size={16} /> Simpan Perubahan Anggota
+            </CartoonButton>
+          )}
         </div>
 
         {/* Add New Fine */}

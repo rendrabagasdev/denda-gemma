@@ -1,4 +1,4 @@
-# GEMMA Design System: Cartoon-Premium
+-# GEMMA Design System: Cartoon-Premium
 
 Dokumentasi ini berisi panduan gaya dan komponen UI untuk menjaga konsistensi desain antara aplikasi Guest, Undangan, dan Admin Panel masa depan.
 
