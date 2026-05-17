@@ -58,7 +58,7 @@ export default function AdminSidebar({ onAction, activeAction, mode = 'denda' }:
       <header className="mb-6">
         <h1 className="text-5xl lg:text-6xl font-black uppercase tracking-tighter leading-[0.8] text-zinc-900">
           GEMMA<br/>
-          <span className="text-[#ffdc00] drop-shadow-sm">ADMIN</span>
+          <span className="text-[#1787ff] drop-shadow-sm">ADMIN</span>
         </h1>
       </header>
 
@@ -70,7 +70,7 @@ export default function AdminSidebar({ onAction, activeAction, mode = 'denda' }:
             onClick={() => router.push(item.path)}
             className={`w-full flex items-center gap-4 p-4 rounded-2xl font-bold transition-all group ${
               item.isActive 
-                ? 'bg-[#ffdc00] text-black shadow-lg shadow-[#ffdc00]/20' 
+                ? 'bg-[#1787ff] text-white shadow-lg shadow-[#1787ff]/20' 
                 : 'text-zinc-400 hover:bg-zinc-50 hover:text-zinc-900'
             }`}
           >
@@ -90,7 +90,7 @@ export default function AdminSidebar({ onAction, activeAction, mode = 'denda' }:
             onClick={() => onAction?.(item.id)}
             className={`w-full flex items-center gap-4 p-4 rounded-2xl font-bold transition-all group ${
               item.isActive 
-                ? 'bg-[#ffdc00] text-black shadow-lg shadow-[#ffdc00]/20' 
+                ? 'bg-[#1787ff] text-black shadow-lg shadow-[#1787ff]/20' 
                 : 'text-zinc-400 hover:bg-zinc-50 hover:text-zinc-900'
             }`}
           >

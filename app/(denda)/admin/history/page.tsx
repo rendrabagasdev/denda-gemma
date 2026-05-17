@@ -69,9 +69,9 @@ export default function AdminHistoryPage() {
         {/* Mobile Header (Hidden on Desktop) */}
         <div className="lg:hidden p-6 pb-0">
           <header className="mb-4 flex justify-between items-start">
-            <h1 className="text-4xl font-black uppercase tracking-tighter leading-tight text-zinc-900">
+            <h1 className="text-4xl font-black uppercase tracking-tight leading-none text-zinc-900">
               GEMMA<br/>
-              <span className="text-success drop-shadow-sm">HISTORY</span>
+              <span className="text-red-300 drop-shadow-sm">HISTORY</span>
             </h1>
             <button 
               onClick={() => router.push('/admin')}

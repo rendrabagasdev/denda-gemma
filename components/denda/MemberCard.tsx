@@ -41,7 +41,7 @@ export default function MemberCard({ member, fines, onClick, children }: MemberC
               </span>
             ))
           ) : (
-            <span className="text-xs font-bold text-success uppercase italic opacity-40">Mantap, semua sudah lunas!</span>
+            <span className="text-xs font-bold text-success uppercase italic opacity-40">Jossss, semua sudah lunas!</span>
           )}
         </div>
         {unpaidFines.length > 0 && (

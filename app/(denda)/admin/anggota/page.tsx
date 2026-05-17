@@ -156,9 +156,9 @@ export default function AnggotaDendaPage() {
             </div>
             <button 
               onClick={() => handleOpenModal()}
-              className="cartoon-btn bg-[#ffdc00] px-8 h-14 flex items-center justify-center gap-3 font-black uppercase text-xs tracking-widest shadow-xl shadow-[#ffdc00]/20 text-black"
+              className="cartoon-btn bg-primary  px-8 h-14 flex items-center justify-center gap-3 font-black uppercase text-xs tracking-widest shadow-xl shadow-[#ffdc00]/20 text-white"
             >
-              <UserPlus size={20} /> Tambah Warga
+              <UserPlus size={20} /> Tambah Anggota
             </button>
           </div>
 

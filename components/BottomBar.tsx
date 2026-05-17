@@ -46,11 +46,11 @@ export default function BottomBar({ mode = 'undangan' }: { mode?: 'undangan' | '
                 <Icon 
                   size={24} 
                   strokeWidth={active ? 3 : 2}
-                  className={active ? 'text-primary' : 'text-zinc-400'} 
+                  className={active ? 'text-[#1787ff]' : 'text-zinc-400'} 
                 />
               </div>
               
-              <span className={`text-[8px] font-black uppercase mt-1 tracking-widest transition-colors ${active ? 'text-zinc-900' : 'text-zinc-400'}`}>
+              <span className={`text-[8px] font-black uppercase mt-1 tracking-widest transition-colors ${active ? 'text-black' : 'text-zinc-400'}`}>
                 {item.label}
               </span>
 

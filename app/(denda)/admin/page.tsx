@@ -208,21 +208,19 @@ export default function AdminPage() {
         {/* Mobile Header (Hidden on Desktop) */}
         <div className="lg:hidden p-6 pb-0">
           <header className="mb-2">
-            <h1 className="text-4xl font-black uppercase tracking-tighter leading-tight text-zinc-900">
-              GEMMA<br/>
-              <span className="text-[#ffdc00] drop-shadow-sm">ADMIN</span>
-            </h1>
+            <img src="/gemma-text-black.svg" alt="gemma" className="w-42" />
+            <span className="font-display text-[45px] uppercase text-primary   relative -top-5"> Admin </span>
           </header>
         </div>
 
         {/* Search & Filter Section */}
-        <div className="p-6 lg:p-10 pb-2">
+        <div className="p-6 lg:p-10 pb-2 relative -top-10">
           <div className="max-w-xl space-y-3">
             <div className="relative">
               <Search className="absolute left-6 top-1/2 -translate-y-1/2 text-black/20" size={20} />
               <input 
                 type="text"
-                placeholder="Cari anggota atau RT..."
+                placeholder="Cari anggota ..."
                 className="cartoon-input w-full pl-16! h-16 text-lg bg-white shadow-sm border-zinc-100"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
@@ -237,7 +235,7 @@ export default function AdminPage() {
                   onClick={() => setSelectedRT(rtFilter === 'SEMUA' ? null : rtFilter)}
                   className={`px-6 py-2.5 rounded-full border-2 font-black text-[10px] uppercase tracking-wider transition-all shrink-0 ${
                     ((rtFilter === 'SEMUA' && !selectedRT) || selectedRT === rtFilter)
-                      ? 'bg-[#ffdc00] border-black text-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]'
+                      ? 'bg-[#1787ff] border-black text-white shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]'
                       : 'bg-white border-zinc-200 text-zinc-900'
                   }`}
                 >
@@ -249,7 +247,7 @@ export default function AdminPage() {
         </div>
 
         {/* Member List */}
-        <div className="flex-1 overflow-y-auto px-6 lg:px-10 pb-20 no-scrollbar">
+        <div className="flex-1 overflow-y-auto px-6 lg:px-10 pb-20 no-scrollbar relative -top-10">
           <div className="max-w-6xl">
           {loading ? (
             <div className="flex flex-col items-center justify-center py-20 gap-4">
@@ -274,7 +272,7 @@ export default function AdminPage() {
                       <div className="flex flex-wrap gap-3 opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-all transform lg:translate-y-2 lg:group-hover:translate-y-0">
                         <button 
                           onClick={(e) => { e.stopPropagation(); handleAction(member, 'payment'); }}
-                          className="flex-1 min-w-[80px] bg-[#22c55e] text-black h-12 rounded-2xl font-black text-[10px] uppercase tracking-widest flex items-center justify-center gap-2 hover:brightness-95 transition-all shadow-sm active:scale-95"
+                          className="flex-1 min-w-[80px] bg-red-300 text-white h-12 rounded-2xl font-black text-[10px] uppercase tracking-widest flex items-center justify-center gap-2 hover:brightness-95 transition-all shadow-sm active:scale-95"
                         >
                           <Wallet size={16} strokeWidth={2.5} />
                           <span>Bayar</span>
@@ -282,7 +280,7 @@ export default function AdminPage() {
                         
                         <button 
                           onClick={(e) => { e.stopPropagation(); handleAction(member, 'edit'); }}
-                          className="flex-1 min-w-[80px] bg-[#ffdc00] text-black h-12 rounded-2xl font-black text-[10px] uppercase tracking-widest flex items-center justify-center gap-2 hover:brightness-95 transition-all shadow-sm active:scale-95"
+                          className="flex-1 min-w-[80px] bg-[#1787ff] text-white h-12 rounded-2xl font-black text-[10px] uppercase tracking-widest flex items-center justify-center gap-2 hover:brightness-95 transition-all shadow-sm active:scale-95"
                         >
                           <Edit3 size={16} strokeWidth={2.5} />
                           <span>Edit</span>
