@@ -117,7 +117,7 @@ export default function TemplatesPage() {
 
             <button 
               onClick={handleAdd}
-              className="cartoon-btn bg-[#ffdc00] px-8 h-14 flex items-center gap-2 font-black uppercase text-[10px] tracking-widest shadow-lg"
+              className="cartoon-btn bg-primary text-white px-8 h-14 flex items-center gap-2 font-black uppercase text-[10px] tracking-widest shadow-lg"
             >
               <Plus size={20} strokeWidth={3} /> Tambah Template
             </button>
@@ -144,10 +144,10 @@ export default function TemplatesPage() {
                 className="cartoon-card bg-white p-6 group hover:border-primary transition-all"
               >
                 <div className="flex justify-between items-start mb-6">
-                  <div className={`w-12 h-12 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform ${template.content.startsWith('file:') ? 'bg-blue-50 text-blue-500' : 'bg-orange-50 text-orange-500'}`}>
+                  <div className={`w-12 h-12 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform ${template.content.startsWith('file:') ? 'bg-blue-50 text-blue-500' : 'bg-primary/10 text-primary'}`}>
                     {template.content.startsWith('file:') ? <FileText size={24} /> : <Layout size={24} />}
                   </div>
-                  <div className={`px-3 py-1 rounded-full text-[8px] font-black uppercase tracking-widest ${template.content.startsWith('file:') ? 'bg-blue-100 text-blue-600' : 'bg-orange-100 text-orange-600'}`}>
+                  <div className={`px-3 py-1 rounded-full text-[8px] font-black uppercase tracking-widest ${template.content.startsWith('file:') ? 'bg-blue-100 text-blue-600' : 'bg-primary/20 text-primary'}`}>
                     {template.content.startsWith('file:') ? 'DOCX' : 'HTML'}
                   </div>
                 </div>

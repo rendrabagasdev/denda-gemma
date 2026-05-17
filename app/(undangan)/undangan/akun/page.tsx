@@ -170,9 +170,9 @@ export default function AkunPage() {
                       )}
                     </button>
                     
-                    <div className="p-4 bg-orange-50 rounded-2xl flex items-start gap-3 border border-orange-100">
-                      <Info size={16} className="text-orange-500 shrink-0 mt-0.5" />
-                      <p className="text-[9px] font-bold text-orange-600 uppercase leading-relaxed tracking-wider">
+                    <div className="p-4 bg-primary/10 rounded-2xl flex items-start gap-3 border border-primary/20">
+                      <Info size={16} className="text-primary shrink-0 mt-0.5" />
+                      <p className="text-[9px] font-bold text-primary uppercase leading-relaxed tracking-wider">
                         Demi keamanan, gunakan minimal 8 karakter dengan kombinasi huruf besar, kecil, dan angka. Jangan berikan password kepada siapapun.
                       </p>
                     </div>

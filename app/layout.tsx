@@ -26,6 +26,9 @@ export const metadata: Metadata = {
     description: "Sistem administrasi dan informasi Gerakan Masyarakat Muda Mudi Dusun Tobratan.",
     type: "website",
     locale: "id_ID",
+  },
+  icons:{
+    icon: "/favicon-rounded.svg"
   }
 };
 

@@ -701,7 +701,7 @@ export default function UndanganPage() {
                         }`}
                       >
                         <div className="flex items-center gap-3">
-                          <div className={t.content.startsWith('file:') ? 'text-blue-500' : 'text-orange-500'}>
+                          <div className={t.content.startsWith('file:') ? 'text-blue-500' : 'text-primary'}>
                             {t.content.startsWith('file:') ? <FileText size={20} /> : <Layout size={20} />}
                           </div>
                           <span className="font-bold text-sm">{t.name}</span>
