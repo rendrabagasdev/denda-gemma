@@ -50,15 +50,18 @@ export default function AdminSidebar({ onAction, activeAction, mode = 'denda' }:
       const Icon = IconMap[item.icon]
       return <Icon size={20} />
     })()}</span> : null,
-    isActive: activeAction === item.id
+    isActive: item.path ? pathname === item.path : activeAction === item.id
   }))
+
+  const primaryColorClass = mode === 'undangan' ? 'bg-primary text-white shadow-primary/20' : 'bg-[#ffdc00] text-black shadow-[#ffdc00]/20'
+  const brandColorText = mode === 'undangan' ? 'text-primary' : 'text-[#ffdc00]'
 
   return (
     <aside className="hidden lg:flex w-72 flex-col bg-white border-r border-zinc-100 p-8 shrink-0">
       <header className="mb-6">
         <h1 className="text-5xl lg:text-6xl font-black uppercase tracking-tighter leading-[0.8] text-zinc-900">
           GEMMA<br/>
-          <span className="text-[#1787ff] drop-shadow-sm">ADMIN</span>
+          <span className={`${brandColorText} drop-shadow-sm`}>{mode === 'undangan' ? 'TOBRATAN' : 'ADMIN'}</span>
         </h1>
       </header>
 
@@ -70,7 +73,7 @@ export default function AdminSidebar({ onAction, activeAction, mode = 'denda' }:
             onClick={() => router.push(item.path)}
             className={`w-full flex items-center gap-4 p-4 rounded-2xl font-bold transition-all group ${
               item.isActive 
-                ? 'bg-[#1787ff] text-white shadow-lg shadow-[#1787ff]/20' 
+                ? `${primaryColorClass} shadow-lg` 
                 : 'text-zinc-400 hover:bg-zinc-50 hover:text-zinc-900'
             }`}
           >
@@ -87,10 +90,10 @@ export default function AdminSidebar({ onAction, activeAction, mode = 'denda' }:
         {actionItems.map((item) => (
           <button
             key={item.id}
-            onClick={() => onAction?.(item.id)}
+            onClick={() => item.path ? router.push(item.path) : onAction?.(item.id)}
             className={`w-full flex items-center gap-4 p-4 rounded-2xl font-bold transition-all group ${
               item.isActive 
-                ? 'bg-[#1787ff] text-black shadow-lg shadow-[#1787ff]/20' 
+                ? `${primaryColorClass} shadow-lg` 
                 : 'text-zinc-400 hover:bg-zinc-50 hover:text-zinc-900'
             }`}
           >

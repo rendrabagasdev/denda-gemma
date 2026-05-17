@@ -46,11 +46,11 @@ export default function BottomBar({ mode = 'undangan' }: { mode?: 'undangan' | '
                 <Icon 
                   size={24} 
                   strokeWidth={active ? 3 : 2}
-                  className={active ? 'text-[#1787ff]' : 'text-zinc-400'} 
+                  className={active ? (mode === 'undangan' ? 'text-primary' : 'text-[#ffdc00]') : 'text-zinc-400'} 
                 />
               </div>
               
-              <span className={`text-[8px] font-black uppercase mt-1 tracking-widest transition-colors ${active ? 'text-black' : 'text-zinc-400'}`}>
+              <span className={`relative z-10 text-[8px] font-black uppercase mt-1 tracking-widest transition-colors ${active ? 'text-zinc-900' : 'text-zinc-400'}`}>
                 {item.label}
               </span>
 
@@ -58,7 +58,7 @@ export default function BottomBar({ mode = 'undangan' }: { mode?: 'undangan' | '
               {active && (
                 <motion.div 
                   layoutId="bottom-nav-active"
-                  className="absolute inset-x-2 inset-y-1 bg-zinc-50 rounded-3xl z-0"
+                  className="absolute inset-x-2 inset-y-1 bg-zinc-100 rounded-3xl z-0"
                   transition={{ type: 'spring', bounce: 0.3, duration: 0.6 }}
                 />
               )}

@@ -73,9 +73,14 @@ export default function AnggotaDendaPage() {
       return
     }
 
+    // Normalisasi RT: '03' -> '3', '04' -> '4'
+    const parsedRT = parseInt(formData.rt, 10)
+    const normalizedRT = isNaN(parsedRT) ? formData.rt : parsedRT.toString()
+
     // Fix: Convert empty string to null for UUID field
     const dataToSubmit = {
       ...formData,
+      rt: normalizedRT,
       division_id: formData.division_id || null
     }
 
@@ -119,17 +124,33 @@ export default function AnggotaDendaPage() {
     }
   }
 
+  // Helper untuk normalisasi RT
+  const getNormalizedRT = (rt: string) => {
+    if (!rt) return ''
+    const parsed = parseInt(rt, 10)
+    return isNaN(parsed) ? rt : parsed.toString()
+  }
+
   // Filter Logic
-  const uniqueRTs = useMemo(() => Array.from(new Set(members.map(m => m.rt))).sort(), [members])
+  const uniqueRTs = useMemo(() => {
+    const normalized = members.map(m => getNormalizedRT(m.rt))
+    return Array.from(new Set(normalized)).sort((a, b) => {
+      const numA = parseInt(a, 10) || 0
+      const numB = parseInt(b, 10) || 0
+      return numA - numB || a.localeCompare(b)
+    })
+  }, [members])
+
   const uniqueDivisis = useMemo(() => Array.from(new Set(members.map(m => m.divisi || '-'))).sort(), [members])
   const uniqueJabatans = useMemo(() => Array.from(new Set(members.map(m => m.jabatan || 'Anggota'))).sort(), [members])
 
   const filteredMembers = useMemo(() => {
     return members
       .filter(m => {
+        const normRT = getNormalizedRT(m.rt)
         const matchesSearch = m.nama.toLowerCase().includes(search.toLowerCase()) || 
-                             m.rt.toLowerCase().includes(search.toLowerCase())
-        const matchesRT = filterRT === 'all' || m.rt === filterRT
+                             normRT.toLowerCase().includes(search.toLowerCase())
+        const matchesRT = filterRT === 'all' || normRT === filterRT
         const matchesDivisi = filterDivisi === 'all' || (m.divisi || '-') === filterDivisi
         const matchesJabatan = filterJabatan === 'all' || (m.jabatan || 'Anggota') === filterJabatan
         return matchesSearch && matchesRT && matchesDivisi && matchesJabatan
@@ -226,7 +247,7 @@ export default function AnggotaDendaPage() {
                             </div>
                           </td>
                           <td className="p-6 text-center">
-                            <span className="px-3 py-1 bg-zinc-100 rounded-full font-black text-[10px] text-zinc-500">RT {member.rt}</span>
+                            <span className="px-3 py-1 bg-zinc-100 rounded-full font-black text-[10px] text-zinc-500">RT {getNormalizedRT(member.rt)}</span>
                           </td>
                           <td className="p-6">
                             <span className="text-[10px] font-bold text-zinc-600 uppercase tracking-wider">{member.divisi || '-'}</span>
@@ -266,7 +287,7 @@ export default function AnggotaDendaPage() {
                       <div className="flex-1 min-w-0">
                         <p className="font-bold text-zinc-900 truncate">{member.nama}</p>
                         <div className="flex flex-wrap gap-2 mt-1">
-                          <span className="text-[9px] font-black uppercase text-zinc-400">RT {member.rt}</span>
+                          <span className="text-[9px] font-black uppercase text-zinc-400">RT {getNormalizedRT(member.rt)}</span>
                           <span className="text-[9px] font-bold text-indigo-600 uppercase tracking-widest bg-indigo-50 px-2 rounded-full">{member.jabatan}</span>
                         </div>
                       </div>
